@@ -444,7 +444,7 @@ export default {
       this.total = +data.counts
       this.loading = false
     },
-    // ?************************************************发送省市县数据
+    // 发送省市县数据
     // 省数据变化(参数省市县value)
     async sendProvinceChange() {
       // 清空市数据
@@ -462,7 +462,7 @@ export default {
       const { data } = await areaList({ parentId: this.form.senderCityId })
       this.sendCountyList = data
     },
-    // ?************************************************接收省市县数据
+    // 接收省市县数据
     // 省数据变化(参数省市县value)
     async receiveProvinceChange() {
       // 清空市数据
