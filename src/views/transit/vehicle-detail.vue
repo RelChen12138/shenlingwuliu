@@ -3,7 +3,7 @@
   <div
     class="dashboard-container vehicle-detail"
   >
-
+    2
   </div>
 </template>
 <script>
