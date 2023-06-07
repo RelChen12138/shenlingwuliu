@@ -1,9 +1,16 @@
 <!-- 车型管理 -->
 <template>
   <div class="dashboard-container car-models customer-list-box">
-
-  </div>
-</template>
+    <div class="car-models-top">
+      <div>
+        <span>车型编号：</span>
+        <el-input v-model="input" placeholder="请输入车型编号" style="width: 300px"></el-input>
+      </div>
+      <div>
+        <el-input v-model="input" placeholder="请输入车型编号"></el-input>
+      </div>
+    </div>
+  </div></template>
 <script>
 export default {
 
@@ -64,5 +71,12 @@ export default {
     color: #818693;
     line-height: 24px;
   }
+}
+.car-models-top{
+  width: 1250px;
+  height: 200px;
+  background-color: #fff;
+  margin-left: 35px;
+  margin: 35px;
 }
 </style>
