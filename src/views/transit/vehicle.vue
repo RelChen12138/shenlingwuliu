@@ -1,7 +1,16 @@
 <!-- 车辆列表 -->
 <template>
   <div class="dashboard-container vehicle customer-list-box">
-
+    <div class="first-div">
+      <div class="first-div-son"><span>车辆类型：</span><el-input placeholder="请选择"></el-input></div>
+      <div class="first-div-son"><span>车牌号码：</span><el-input placeholder="请输入车牌号码"></el-input></div>
+      <div class="first-div-son">
+        <el-button
+          size="small"
+          type="primary"
+        >搜索</el-button>
+        <el-button size="small">重置</el-button></div>
+    </div>
   </div>
 </template>
 <script>
@@ -65,7 +74,7 @@ export default {
 }
 </style>
 
-<style>
+<style lang='scss' scoped>
   .startconfirm{
     width: 481px;
 
@@ -89,5 +98,19 @@ export default {
     .confirm .el-message-box__btns{
       text-align: center;
       margin-top: 10px;
+    }
+    .dashboard-container{
+      width: 100%;
+      padding: 20px;
+    .first-div {
+      width: 100%;
+      background-color: #fff;
+      height: 80px;
+      display: flex;
+      justify-content: space-around;
+      .first-div-son{
+        display: flex;
+      }
+    }
     }
 </style>
