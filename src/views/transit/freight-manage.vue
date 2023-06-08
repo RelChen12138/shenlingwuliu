@@ -303,12 +303,14 @@ export default {
     },
     // 编辑运费模板
     handleEdit(row) {
+      console.log(row)
       this.dialogFormVisible = true
       this.type = 'edit'
       const arr = row.associatedCityList.map((item) => {
         return Number(item)
       })
       this.date = Object.assign({}, row, { associatedCityList: arr })
+      this.data = row
     },
     // 更改关联城市
     handleCheckedCitiesChange(value) {
@@ -343,29 +345,21 @@ export default {
             continuousWeight: this.data.continuousWeight,
             lightThrowingCoefficient: this.data.lightThrowingCoefficient
           }
-          await changefright(data).then((res) => {
-            if (String(res.code) === '200') {
-              this.$message({
-                message: '操作成功！',
-                type: 'success'
-              })
-              this.dialogFormVisible = false
-              this.getfreightList()
-            } else {
-              this.$message({
-                message: res.msg,
-                type: 'error'
-              })
-            }
-          })
+          if (this.type === 'add') {
+            await changefright(data)
+            this.$message({
+              message: '操作成功！',
+              type: 'success'
+            })
+            this.dialogFormVisible = false
+            this.getfreightList()
+          } else {
+            await
+          }
         } else {
           this.$message.error('*号为必填项!')
         }
       })
-    },
-    // 修改点击确认
-    handleEditPerms() {
-      console.log('修改')
     },
     // 点击删除
     handleDelete(row) {
