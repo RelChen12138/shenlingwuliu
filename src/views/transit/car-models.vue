@@ -48,7 +48,7 @@
               placeholder="请选择应载体积"
             >
               <el-option
-                v-for="item in options"
+                v-for="item in optionsTiji"
                 :key="item.value"
                 :label="item.label"
                 :value="item.value"
@@ -207,7 +207,70 @@ export default {
         num: null
       }],
       // 车辆承重下拉框
-      options: []
+      options: [{
+        value: 'RANGE_LEVEL_1',
+        label: '<1.8(吨)'
+      },
+      {
+        value: 'RANGE_LEVEL_2',
+        label: '1.8-6(吨)'
+      },
+      {
+        value: 'RANGE_LEVEL_3',
+        label: '6-14(吨)'
+      },
+      {
+        value: 'RANGE_LEVEL_4',
+        label: '14-30(吨)'
+      },
+      {
+        value: 'RANGE_LEVEL_5',
+        label: '30-50(吨)'
+      },
+      {
+        value: 'RANGE_LEVEL_6',
+        label: '50-100(吨)'
+      },
+      {
+        value: 'RANGE_LEVEL_7',
+        label: '100>（吨）'
+      }],
+      optionsTiji: [{
+        value: 'RANGE_LEVEL_1',
+        label: '<3(m³)'
+      },
+      {
+        value: 'RANGE_LEVEL_2',
+        label: '3-5(m³)'
+      },
+      {
+        value: 'RANGE_LEVEL_3',
+        label: '5-10(m³)'
+      },
+      {
+        value: 'RANGE_LEVEL_4',
+        label: '10-15(m³)'
+      },
+      {
+        value: 'RANGE_LEVEL_5',
+        label: '15-30(m³)'
+      },
+      {
+        value: 'RANGE_LEVEL_6',
+        label: '30-50(m³)'
+      },
+      {
+        value: 'RANGE_LEVEL_7',
+        label: '50-80(m³)'
+      },
+      {
+        value: 'RANGE_LEVEL_8',
+        label: '80-150(m³)'
+      },
+      {
+        value: 'RANGE_LEVEL_9',
+        label: '150>(m³)'
+      }]
     }
   },
   created() {
