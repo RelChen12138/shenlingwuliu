@@ -415,7 +415,17 @@
               width="200"
             >
               <template slot-scope="scope">
-                <span>{{ scope.row.senderProvince.name }}&nbsp;{{ scope.row.senderCity.name }} &nbsp;{{ scope.row.senderCounty.name }} &nbsp;{{ scope.row.senderAddress }}</span>
+                <!-- 使用插槽作用域变量获取当前行的收件人地址信息 -->
+                <span>
+                  <!-- 显示省级名称 -->
+                  {{ scope.row.senderProvince.name }}
+                  <!-- 显示市级名称，并与前面的省级名称用空格隔开 -->
+                  &nbsp;{{ scope.row.senderCity.name }}
+                  <!-- 显示区级名称，并与前面的省级、市级名称用空格隔开 -->
+                  &nbsp;{{ scope.row.senderCounty.name }}
+                  <!-- 显示详细地址信息，并与前面的省级、市级、区级名称用空格隔开 -->
+                  &nbsp;{{ scope.row.senderAddress }}
+                </span>
               </template>
             </el-table-column>
             <!-- 收件人姓名 -->
@@ -442,7 +452,16 @@
               width="200"
             >
               <template slot-scope="scope">
-                <span>{{ scope.row.receiverProvince.name }}&nbsp;{{ scope.row.receiverCity.name }} &nbsp;{{ scope.row.receiverCounty.name }} &nbsp;{{ scope.row.receiverAddress }}</span>
+                <!-- 使用插槽作用域变量获取当前行的收件人地址信息 -->
+                <span>
+                  <!-- 显示省级名称 -->
+                  {{ scope.row.receiverProvince.name }}
+                  <!-- 显示市级名称，并与前面的省级名称用空格隔开 -->
+                  &nbsp;{{ scope.row.receiverCity.name }}
+                  <!-- 显示区级名称，并与前面的省级、市级名称用空格隔开 -->
+                  &nbsp;{{ scope.row.receiverCounty.name }}
+                  <!-- 显示详细地址信息，并与前面的省级、市级、区级名称用空格隔开 -->
+                  &nbsp;{{ scope.row.receiverAddress }}</span>
               </template>
             </el-table-column>
 
