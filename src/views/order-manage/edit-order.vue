@@ -179,11 +179,6 @@
                 class="pake-info"
                 style="margin-top: 20px"
               >
-                <!-- <img
-                  class="img-info2"
-                  src="../../assets/juli.png"
-                  alt=""
-                /> -->
                 <span
                   style="display: inline-block; margin-top: 6px;margin-left:30px"
                 >备注：暂无</span>
@@ -240,7 +235,6 @@
           >
             <el-col style="padding-right: 12px;">
               所在网点：
-              <!-- {{ orderDetailShow.taskPickup.agency.name }} -->
               {{ agencyName }}
             </el-col>
             <el-col
@@ -261,23 +255,8 @@
             >取件类型：
               上门取件
             </el-col>
-            <!-- <el-col
-              v-if=" orderDetailShow.taskPickup.status === 1"
-              style="padding-left: 12px;padding-right: 12px;"
-            >作业状态：新任务
-            </el-col>
-            <el-col
-              v-else-if=" orderDetailShow.taskPickup.status === 2"
-              style="padding-left: 12px;padding-right: 12px;"
-            >作业状态：新任务
-            </el-col>
-            <el-col
-              v-else
-              style="padding-left: 12px;padding-right: 12px;"
-            >作业状态：已取消
-            </el-col> -->
+
             <el-col style="padding-left: 12px;padding-right: 12px;">取件快递员：
-              <!-- {{ orderDetailShow.taskPickup.courier.name }} -->
               {{ name }}
             </el-col>
           </el-row>
@@ -313,7 +292,6 @@
           >
             <el-col style="padding-right: 12px;">
               所在网点：
-              <!-- {{ orderDetailShow.taskDispatch.agency.name }} -->
               {{ disName }}
             </el-col>
             <el-col
@@ -332,7 +310,6 @@
             >作业状态：已取消
             </el-col>
             <el-col style="padding-left: 12px;padding-right: 12px;">取件快递员：
-              <!-- {{ orderDetailShow.taskPickup.courier.name }} -->
               {{ disPathName }}
             </el-col>
             <el-col style="">快递员电话：{{ disMobile }}</el-col>
@@ -379,7 +356,6 @@
                   <span v-if="orderDetailShow.paymentMethod == 1">预结</span>
                   <span v-else-if="orderDetailShow.paymentMethod==2">到付</span>
                 </template>
-                <!-- <span>{{ orderDetailShow.paymentStatus }}</span> -->
               </div>
             </div>
             <div style="margin-left: 174px ">
@@ -389,7 +365,6 @@
                   <span v-if="orderDetailShow.paymentStatus == 1">未付</span>
                   <span v-else-if="orderDetailShow.paymentStatus == 2">已付</span>
                 </template>
-                <!-- <span>{{ orderDetailShow.paymentMethod }}</span> -->
               </div>
             </div>
           </div></el-collapse-item>
@@ -535,10 +510,6 @@ export default {
         this.taskDispatchEstimatedEndTime = this.orderDetailShow.taskDispatch.estimatedEndTime
         this.taskDispatchestimatedStartTime = this.orderDetailShow.taskDispatch.estimatedStartTime
       }
-
-      // this.receiverProvince = this.orderDetailShow.receiverProvince.name
-      // this.receiverCity = this.orderDetailShow.receiverCity.name
-      // this.receiverCounty = this.orderDetailShow.receiverCounty.name
     }
   }
 
