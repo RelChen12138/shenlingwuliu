@@ -1,3 +1,4 @@
+  <!-- 高德地图组件 -->
 <template>
   <div id="container"></div>
 </template>
@@ -22,19 +23,24 @@ export default {
       AMapLoader.load({
         key: '19a48c5969896613a4f068ce23315023', // 申请好的Web端开发者Key，首次调用 load 时必填
         version: '2.0', // 指定要加载的 JSAPI 的版本，缺省时默认为 1.4.15
-        plugins: [''] // 需要使用的的插件列表，如比例尺'AMap.Scale'等
-      }).then((AMap) => {
-        this.map = new AMap.Map('container', { // 设置地图容器id
-          viewMode: '3D', // 是否为3D地图模式
-          zoom: 5, // 初始化地图级别
-          center: [105.602725, 37.076636] // 初始化地图中心点位置
-        })
-      }).catch(e => {
-        console.log(e)
+        plugins: [
+          'AMap.Scale' // 指定居中显示地理数量的缩放和比例尺控制台。您可以使用您
+        ] // 需要使用的的插件列表，如比例尺'AMap.Scale'等
       })
+        .then((AMap) => {
+          this.map = new AMap.Map('container', {
+            // 设置地图容器id
+            viewMode: '3D', // 是否为3D地图模式
+            zoom: 13, // 初始化地图级别
+            center: [116.404, 39.915] // 初始化地图中心点位置
+          })
+          this.map.addControl(new AMap.Scale())
+        })
+        .catch((e) => {
+          console.log(e)
+        })
     }
   }
-
 }
 </script>
 
@@ -43,6 +49,6 @@ export default {
   padding: 0px;
   margin: 0px;
   width: 100%;
-  height: 800px;
+  height: 690px;
 }
 </style>
