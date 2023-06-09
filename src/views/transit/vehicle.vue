@@ -1,12 +1,327 @@
 <!-- 车辆列表 -->
 <template>
   <div class="dashboard-container vehicle customer-list-box">
+    <div class="first-div">
+      <!-- 车辆类型表单 -->
+      <el-form
+        ref="resetform"
+        :inline="true"
+        :model="obj"
+        :rules="rules"
+        class="demo-form-inline"
+        style="width: 100%;"
+      >
+        <el-form-item
+          prop="truckTypeId"
+          label="车辆类型"
+          style="width: 30%;"
+        >
+          <el-select
+            v-model="obj.truckTypeId"
+            clearable
+            placeholder="请选择"
+            style="width: 400px;"
+          >
+            <el-option
+              v-for="item in carTypeList"
+              :key="item.id"
+              :label="item.name"
+              :value="item.id"
+            ></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item
+          prop="licensePlate"
+          label="车牌号码"
+          style="width: 30%;"
+        >
+          <el-input
+            v-model="obj.licensePlate"
+            style="width: 400px;"
+            placeholder="请输入车牌号码"
+          ></el-input>
 
+        </el-form-item>
+        <el-form-item>
+          <el-button
+            style="width: 90px;"
+            type="warning"
+            @click="search"
+          >查询</el-button>
+          <el-button
+            style="width: 90px;"
+            @click="clearform"
+          >重置</el-button>
+        </el-form-item>
+      </el-form>
+    </div>
+    <!-- 车辆数量 -->
+    <div class="car-number">
+      <span
+        :class="{active:activetype==='all'}"
+        @click="handleisActive('all')"
+      >全部{{ totalnumber }}</span>
+      <span
+        :class="{active:activetype==='can-use'}"
+        @click="handleisActive('can-use')"
+      >可用{{ usenumber }}</span>
+      <span
+        :class="{active:activetype==='stop-use'}"
+        @click="handleisActive('stop-use')"
+      >停用{{ stopnumber }}</span>
+    </div>
+    <!-- 主体表格 -->
+    <div class="main">
+      <div class="add-car">
+        <el-button
+          type="warning"
+          @click="addCar"
+        >新增车辆</el-button>
+      </div>
+      <div class="table">
+        <el-table
+          :row-style="{height: '20px'}"
+          :data="carList"
+          style="width: 100%"
+          :stripe="true"
+        >
+          <el-table-column
+            type="index"
+            label="序号"
+            width="50"
+          >
+          </el-table-column>
+
+          <el-table-column
+            prop="licensePlate"
+            label="车牌号码"
+            width="180"
+          >
+          </el-table-column>
+
+          <el-table-column
+            prop="truckTypeName"
+            label="车辆类型"
+          >
+          </el-table-column>
+
+          <el-table-column
+            prop="driverNum"
+            label="司机数量"
+          >
+          </el-table-column>
+
+          <el-table-column
+            prop="workStatus"
+            label="车辆状态"
+          >
+            <template v-slot="{row}">
+              <span
+                class="yuandian"
+                :class="{activeColor:row.workStatus === 1}"
+              ></span>
+              <span>{{ row.workStatus| filterStatus }}</span>
+            </template>
+          </el-table-column>
+
+          <el-table-column
+            prop="deviceGpsId"
+            label="GPS设备ID"
+          >
+          </el-table-column>
+
+          <el-table-column
+            prop="allowableLoad"
+            label="实载重量(T)"
+          >
+          </el-table-column>
+
+          <el-table-column
+            prop="allowableVolume"
+            label="实载体积(方)"
+          >
+          </el-table-column>
+
+          <el-table-column
+            prop="address"
+            label="操作"
+          >
+            <template v-slot="{row}">
+              <el-button
+                type="text"
+                @click="openDetail(row)"
+              >查看详情</el-button>
+              <el-button
+                type="text"
+                :class="{activeColorfont:row.workStatus === 1}"
+              >{{ row.workStatus| filterStatusT }}</el-button>
+              <el-button type="text">配置司机</el-button>
+            </template>
+          </el-table-column>
+        </el-table>
+      </div>
+      <!-- 分页器 -->
+      <div class="hanggao">
+        <el-row
+          class="fenyeqi"
+          type="flex"
+          justify="center"
+        >
+          <el-pagination
+            :current-page="obj.page"
+            :page-sizes="[10, 20, 30, 40]"
+            :page-size="obj.pageSize"
+            layout="total, sizes, prev, pager, next, jumper"
+            :total="activetotal"
+            @size-change="handleSizeChange"
+            @current-change="handleCurrentChange"
+          >
+          </el-pagination>
+        </el-row>
+      </div>
+    </div>
+    <VehicleAdd
+      ref="addDialog"
+      :car-type-list="carTypeList"
+      @update="init"
+    ></VehicleAdd>
   </div>
 </template>
 <script>
+import VehicleAdd from '@/views/transit/components/vehicle-add.vue'
+import { truckList, getCarTypeList } from '@/api/transit'
+import { getBadorGoodcarList } from '@/api/vehicleManagement.js'
 export default {
-  name: 'Vehicle'
+  name: 'Vehicle',
+  components: {
+    VehicleAdd
+  },
+  filters: {
+    filterStatus(v) {
+      return v === 1 ? '启用' : '停用'
+    },
+    filterStatusT(v) {
+      return v === 1 ? '停用' : '启用'
+    }
+  },
+  data () {
+    return {
+      carTypeList: [],
+      usenumber: 0,
+      stopnumber: 0,
+      totalnumber: 0,
+      activetotal: 0,
+      carList: [],
+      obj: {
+        licensePlate: null,
+        page: 1,
+        pageSize: 10,
+        truckTypeId: '',
+        workStatus: null
+      },
+      activetype: 'all',
+      rules: {
+        licensePlate: [{ min: 7, max: 7, message: '请输入正确的车牌号', trigger: 'blur' }],
+        truckTypeId: [{ }]
+      },
+      isOpen: false
+    }
+  },
+  async created() {
+    // 获取车辆总数
+    const { data } = await truckList(this.obj)
+    this.totalnumber = +data.counts
+    this.activetotal = +data.counts
+    this.carList = data.items
+    // 停用车辆数量
+    const res = await getBadorGoodcarList(
+      {
+        page: 1,
+        pageSize: 10,
+        workStatus: 0
+      })
+    this.stopnumber = res.data.counts
+    // 启用车辆数量
+    const rest = await getBadorGoodcarList(
+      {
+        page: 1,
+        pageSize: 10,
+        workStatus: 1
+      }
+    )
+    this.usenumber = rest.data.counts
+    // 获取车辆类型下拉
+    const resTr = await getCarTypeList()
+    this.carTypeList = resTr.data
+  },
+  methods: {
+    // 渲染数据一
+    async init () {
+      const { data } = await truckList(this.obj)
+      this.carList = data.items
+      this.activetotal = +data.counts
+    },
+    // 渲染数据二
+    async initTwo () {
+      const res = await getBadorGoodcarList(this.obj)
+      this.activetotal = +res.data.counts
+      this.carList = res.data.items
+    },
+    // 全部 可用 停用
+    async handleisActive(type) {
+      this.activetype = type // 状态管理 记录目前点击的是哪一个
+      this.obj.page = 1
+      this.obj.pageSize = 10
+      if (type === 'all') {
+        this.obj.workStatus = null
+        const { data } = await truckList(this.obj)
+        this.carList = data.items
+        this.activetotal = +data.counts
+      } else if (type === 'can-use') {
+        this.obj.workStatus = 1
+        this.initTwo()
+      } else {
+        this.obj.workStatus = 0
+        this.initTwo()
+      }
+    },
+    // 分页器每一页显示的数量
+    handleSizeChange(newpageSize) {
+      this.obj.pageSize = newpageSize
+      if (this.activetype === 'all') {
+        this.init()
+      } else {
+        this.initTwo()
+      }
+    },
+    // 分页器 页数变化渲染
+    handleCurrentChange(newpage) {
+      this.obj.page = newpage
+      if (this.activetype === 'all') {
+        this.init()
+      } else {
+        this.initTwo()
+      }
+    },
+    // 查询功能
+    async search () {
+      this.obj.page = 1
+      this.obj.pageSize = 10
+      this.init()
+    },
+    // 重置表单
+    clearform () {
+      this.$refs.resetform.resetFields()
+    },
+    // 新增车辆
+    addCar () {
+      this.$refs.addDialog.getOpen()
+    },
+    openDetail(row) {
+      console.log(row)
+      this.$router.push(`vehicle-detail/?id=${row.id}`)
+    }
+  }
 
 }
 </script>
@@ -65,7 +380,7 @@ export default {
 }
 </style>
 
-<style>
+<style lang='scss' scoped>
   .startconfirm{
     width: 481px;
 
@@ -90,4 +405,69 @@ export default {
       text-align: center;
       margin-top: 10px;
     }
+    .dashboard-container{
+      width: 100%;
+      padding: 20px;
+    .first-div {
+      width: 100%;
+      background-color: #fff;
+      height: 80px;
+      padding: 20px;
+    }
+    .car-number {
+      width: 100%;
+      height: 45px;
+      background-color: #fff;
+      margin-top: 20px;
+      display: flex;
+      span {
+        height: 45px;
+        width: 100px;
+        line-height: 45px;
+        text-align: center;
+        font-size: 14px;
+      }
+    }
+    .main {
+      padding: 25px;
+      margin-top: 20px;
+      width: 100%;
+      background-color: #fff;
+      .add-car{
+        margin-bottom: 20px;
+      }
+      .yuandian{
+        display: inline-block;
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background-color: #e15536;
+      }
+      .fenyeqi{
+        height: 60px;
+        width: 100%;
+        line-height: 100px;
+      }
+      .hanggao {
+        margin-top: 20px;
+      }
+    }
+    }
+    .active {
+      background-color: #ffeeeb;
+      color: #e15536;
+    }
+    .activeColor{
+      background-color: #1dc779 !important;
+    }
+    .activeColorfont{
+      color: #e03a66;
+    }
+    .el-table .warning-row {
+    background: oldlace;
+  }
+
+  .el-table .success-row {
+    background: #f0f9eb;
+  }
 </style>

@@ -39,19 +39,15 @@
         class="r-box"
         element-loading-text="只有网点机构的作业范围可以查看和编辑"
       >
-        <el-card
-          shadow="never"
-        >
+        <el-card shadow="never">
           <div
             v-if="agencyId"
             slot="header"
-            style="
-
-            "
+            style=""
           >
             <span>作业范围</span>
             <div
-              v-if="isShowOperation && currentNode.type ===3"
+              v-if="isShowOperation && currentNode.type === 3"
               style="float: right; margin-right: 40px"
             >
               <el-tooltip
@@ -94,13 +90,8 @@
               />
             </div>
           </div>
-          <div
-            style="
-          padding: 22px 0;
-          "
-          >
-
-            <baidu-map
+          <div style="padding: 22px 0">
+            <!-- <baidu-map
               ref="myMap"
               class="map"
               :center="center"
@@ -129,35 +120,35 @@
                 <el-button
                   v-show="polyline.editing !== false"
                   style="
-                  color: #818693;
-                  border: 1px solid #d8dde3;
-                  padding: 10px 20px;
-                  margin-left: 12px;
-                "
+                    color: #818693;
+                    border: 1px solid #d8dde3;
+                    padding: 10px 20px;
+                    margin-left: 12px;
+                  "
                   class="dele"
                   @click="clear()"
                 >删除围栏</el-button>
                 <P
                   style="
-                  font-size: 12px;
-                  color: rgba(198, 126, 18, 1);
-                  width: 100%;
-                  background: rgba(255, 245, 231, 1);
-                  width: 100%;
-                  height: 30px;
-                  line-height: 30px;
-                  text-align: left;
-                  padding-left: 10px;
-                "
+                    font-size: 12px;
+                    color: rgba(198, 126, 18, 1);
+                    width: 100%;
+                    background: rgba(255, 245, 231, 1);
+                    width: 100%;
+                    height: 30px;
+                    line-height: 30px;
+                    text-align: left;
+                    padding-left: 10px;
+                  "
                 ><img
                   src="@/assets/warn.png"
                   alt=""
                   style="
-                    width: 14px;
-                    vertical-align: middle;
-                    margin-bottom: 2px;
-                    margin-right: 6px;
-                  "
+                      width: 14px;
+                      vertical-align: middle;
+                      margin-bottom: 2px;
+                      margin-right: 6px;
+                    "
                 />点击或拖动鼠标绘制作业范围，右击鼠标结束图形绘制，图形不可有交叉点。完成绘制后，点击提交按钮保存。每个机构仅可支持绘制一个作业范围</P>
               </bm-control>
               <bm-polygon
@@ -173,7 +164,8 @@
                 stroke-style="dashed"
                 @lineupdate="updatePolygonPath"
               />
-            </baidu-map>
+            </baidu-map> -->
+            <map-container></map-container>
           </div>
         </el-card>
       </div>
@@ -181,10 +173,12 @@
   </div>
 </template>
 <script>
+import MapContainer from '@/components/MapContainer/MapContainer'
 import { agencyList } from '@/api/institutions'
 import { courierScopeList, courierAdd, deleteCourierScope } from '@/api/branch'
 export default {
   name: 'InstitutionsJobsArea',
+  components: { MapContainer },
   data() {
     return {
       agencyType: null, // 当前点击所处的机构类型（1,2级机构不展示编辑按钮）
@@ -262,7 +256,11 @@ export default {
         }
       }
       // 根据坐标点自动调整地图的中心点和地图缩放等级
-      const viewPointInfo = this.map && this.map.getViewport(this.isHaveAgencyArange ? pointArr : noAgencyArange)
+      const viewPointInfo =
+        this.map &&
+        this.map.getViewport(
+          this.isHaveAgencyArange ? pointArr : noAgencyArange
+        )
       this.$set(this.center, 'lng', viewPointInfo.center.lng)
       this.$set(this.center, 'lat', viewPointInfo.center.lat)
       this.zoom = this.isHaveAgencyArange ? viewPointInfo.zoom : 11
@@ -346,7 +344,8 @@ export default {
       this.showEdit = false
       // 编辑的时候回到绘制的区域中心点
       // 根据坐标点自动调整地图的中心点和地图缩放等级
-      const viewPointInfo = this.map && this.map.getViewport(this.polyline.paths[0])
+      const viewPointInfo =
+        this.map && this.map.getViewport(this.polyline.paths[0])
       this.$set(this.center, 'lng', viewPointInfo.center.lng)
       this.$set(this.center, 'lat', viewPointInfo.center.lat)
       this.zoom = this.isHaveAgencyArange ? viewPointInfo.zoom : 11
@@ -368,12 +367,15 @@ export default {
       this.instituJobDataList = JSON.parse(res)
       // 将instituJobDataList的数据赋予provincialCenter
       // 获取默认展开节点的ID
-      this.provincialCenterId2 = this.instituJobDataList[0].children[0].children[0]
+      this.provincialCenterId2 =
+        this.instituJobDataList[0].children[0].children[0]
       this.provincialCenterId = this.instituJobDataList[0].children[0].id
       this.getExpandData(this.provincialCenterId)
       this.getExpandData2(this.provincialCenterId2)
-      this.$nextTick(function() {
-        this.$refs['tree'].setCurrentKey(this.instituJobDataList[0].children[0].children[0].id)
+      this.$nextTick(function () {
+        this.$refs['tree'].setCurrentKey(
+          this.instituJobDataList[0].children[0].children[0].id
+        )
       })
       this.listLoading = false
     },
@@ -455,68 +457,66 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
-  /deep/ .customer-tree-box {
-
-        .el-tree-node {
+/deep/ .customer-tree-box {
+  .el-tree-node {
+    margin: 2px 0 !important;
+    .is-focusable {
+      position: relative;
+      &::before {
+        content: '';
+        display: inline-block;
+        position: absolute;
+        left: 6px;
+        // width: 1px;
+        border-left: #e5e7ec solid 1px;
+        height: calc(100% + 3px);
+        // 将此类名的最后一项样式设置为none
+        &:last-child {
+          border-left: none !important;
+        }
+      }
+      margin: 2px 0 !important;
+      .el-tree-node {
+        .el-tree-node__children {
           margin: 2px 0 !important;
-          .is-focusable {
-            position: relative;
-            &::before {
-            content: '';
-            display: inline-block;
-            position: absolute;
-            left: 6px;
-            // width: 1px;
-            border-left: #E5E7EC solid 1px;
-            height: calc(100% + 3px);
-            // 将此类名的最后一项样式设置为none
-            &:last-child {
-              border-left: none !important;
-            }
-          }
-            margin: 2px 0 !important;
-            .el-tree-node {
-              .el-tree-node__children {
-                margin: 2px 0 !important;
-                .el-tree-node {
-                  .el-tree-node__content {
-                    .el-tree-node__expand-icon {
-                      display: none;
-                    }
-                    .el-tree-node__label {
-                      margin-left: 0px;
-                      white-space:nowrap;
-                      overflow:hidden;
-                      text-overflow:ellipsis;
-                      width: 131px;
-                    }
-                  }
-                }
+          .el-tree-node {
+            .el-tree-node__content {
+              .el-tree-node__expand-icon {
+                display: none;
+              }
+              .el-tree-node__label {
+                margin-left: 0px;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                width: 131px;
               }
             }
           }
         }
-        .el-tree-node {
-          .el-tree-node{
-            .el-tree-node
-              {
-                position: relative;
-                &::before {
-                  content: '';
-                  display: inline-block;
-                  position: absolute;
-                  left: 26px;
-                  // width: 1px;
-                  border-left: #E5E7EC solid 1px;
-                  height: calc(100% + 3px);
-                  &:last-child {
-                  border-left: none !important;
-            }
-                }
-              }
-          }
-        }
+      }
+    }
   }
+  .el-tree-node {
+    .el-tree-node {
+      .el-tree-node {
+        position: relative;
+        &::before {
+          content: '';
+          display: inline-block;
+          position: absolute;
+          left: 26px;
+          // width: 1px;
+          border-left: #e5e7ec solid 1px;
+          height: calc(100% + 3px);
+          &:last-child {
+            border-left: none !important;
+          }
+        }
+      }
+    }
+  }
+}
 </style>
 <style rel="stylesheet/scss" lang="scss" scoped>
 .scheduling-box {
@@ -524,10 +524,10 @@ export default {
 
   display: flex;
   .l-box {
-    border-radius: 4px!important;
+    border-radius: 4px !important;
   }
-  .el-card box-card{
-    border-radius: 4px
+  .el-card box-card {
+    border-radius: 4px;
   }
 }
 .alert {
@@ -559,25 +559,24 @@ export default {
 }
 </style>
 <style lang="scss" scoped>
-.searchBox{
+.searchBox {
   display: flex;
 
-  label{
+  label {
     color: #20232a;
     font-weight: 400;
     font-size: 14px;
   }
-  /deep/ .el-input{
+  /deep/ .el-input {
     width: 230px;
   }
-  .keyword{
+  .keyword {
     margin-right: 30px;
   }
 }
 /deep/ .el-tree-node__content {
   margin-right: 20px;
   .el-tree-node__label {
-
   }
 }
 /deep/ .l-box {
@@ -615,7 +614,7 @@ export default {
     background: #ffffff;
     /deep/ .el-card__body {
       padding: 10px 8px 0 9px !important;
-      border-radius: 8px
+      border-radius: 8px;
     }
     .app-container-tree {
       padding: 0 !important;
@@ -645,9 +644,9 @@ export default {
                     }
                     .el-tree-node__label {
                       margin-left: 0px;
-                      white-space:nowrap;
-                      overflow:hidden;
-                      text-overflow:ellipsis;
+                      white-space: nowrap;
+                      overflow: hidden;
+                      text-overflow: ellipsis;
                       width: 131px;
                     }
                   }

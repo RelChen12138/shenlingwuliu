@@ -1,19 +1,68 @@
 <!-- 车辆详情 -->
 <template>
-  <div
-    class="dashboard-container vehicle-detail"
-  >
+  <div class="dashboard-container vehicle-detail">
+    <div class="main">
+      <div class="title">
+        <el-tabs
+          v-model="activeName"
+          @tab-click="handleClick"
+        >
+          <el-tab-pane
+            label="基本信息"
+            name="first"
+          >
+            <!-- 描述列表 -->
+            <vehicleInfo></vehicleInfo>
+          </el-tab-pane>
 
+          <el-tab-pane
+            label="行驶证信息"
+            name="second"
+          >
+            <vehicledrivingLicense></vehicledrivingLicense>
+          </el-tab-pane>
+        </el-tabs>
+      </div>
+    </div>
   </div>
 </template>
 <script>
+import vehicleInfo from './components/vehicle-info.vue'
+import vehicledrivingLicense from './components/vehicle-driving-license.vue'
 export default {
-
+  components: {
+    vehicleInfo,
+    vehicledrivingLicense
+  },
+  data() {
+    return {
+      activeName: 'first',
+      id: null
+    }
+  },
+  created() {
+    this.id = this.$route.query.id
+  },
+  methods: {
+    handleClick(tab, event) {
+      // console.log(tab, event)
+      console.log(this.$route.query.id)
+    }
+  }
 }
 </script>
 <style lang="scss" scoped>
 .active {
   color: #ff643d;
+}
+.dashboard-container {
+  width: 100%;
+  padding: 20px;
+  .main {
+    width: 100%;
+    padding:20px 40px;
+    background-color: #fff;
+  }
 }
 </style>
 
