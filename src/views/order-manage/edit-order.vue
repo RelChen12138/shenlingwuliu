@@ -2,35 +2,52 @@
 <template>
   <div class="dashboard-container edit-order">
     <div class="app-container">
+      <!-- 订单卡片 -->
       <el-card
         shadow="never"
         class="order-box"
       >
+        <!-- 订单信息栏（一行4列） -->
+        <!-- :gutter 列与列之间的间隔 -->
+        <!-- justify 水平对齐方式为居中 -->
         <el-row
           :gutter="20"
           justify="center"
         >
+
+          <!-- 第一列 -->
           <el-col :span="6">
+            <!-- 订单编号 -->
             <div class="ddbh">
               订单编号：
+
+              <!-- 订单编号展示 -->
               <label>{{ orderDetailShow.id }}</label>
             </div>
           </el-col>
+
+          <!-- 第二列 -->
           <el-col :span="6">
             <div class="ydbh">
               运单编号：
               <label>{{ orderDetailShow.transportOrder?orderDetailShow.transportOrder.id:'--' }}</label>
             </div>
           </el-col>
+
+          <!-- 第三列 -->
           <el-col :span="6">
             <div class="xdsj">
               下单时间：
               <label>{{ orderDetailShow.createTime }}</label>
             </div>
           </el-col>
+
+          <!-- 第四列 -->
           <el-col :span="6">
             <div class="ddzt">
               订单状态：
+
+              <!-- 订单状态展示，根据订单状态码显示不同状态 -->
               <label v-if="orderDetailShow.status == ' 23000'">待取件</label>
               <label
                 v-else-if="orderDetailShow.status == '23001'"
@@ -62,6 +79,8 @@
               <label v-else>已取消</label>
             </div>
           </el-col>
+
+          <!-- 第五列 -->
           <el-col :span="6">
             <div class="yjddrq">
               预计到达日期：
@@ -70,16 +89,22 @@
           </el-col>
         </el-row>
       </el-card>
+
       <!-- 基本信息 -->
+      <!-- v-model="activeNames"  控制折叠面板打开/关闭的属性，与 data 中的 activeNames 对应 -->
       <el-collapse
         v-model="activeNames"
         style="margin-top: 20px; border: none"
       >
+        <!-- 折叠面板的一个子项，它的 name 属性与 activeNames 中的某个值对应 -->
         <el-collapse-item name="1">
           <template slot="title">
+
+            <!-- 标题 -->
             <div class="collapse-detail">基本信息</div>
           </template>
           <div class="block">
+            <!-- el-timeline  时间线组件 -->
             <el-timeline>
               <div class="line"></div>
               <div
@@ -97,11 +122,13 @@
                 <div style="">
                   <div class="demo-input-suffix base-info">
                     发货方姓名：
+                    <!-- 发货方姓名展示 -->
                     <span>{{ orderDetailShow.senderName }}</span>
                   </div>
 
                   <div class="demo-input-suffix base-info">
                     发货方地址：
+                    <!-- 发货方地址展示 -->
                     <span>{{
                       orderDetailShow.senderProvince.name +
                         orderDetailShow.senderCity.name +
@@ -113,11 +140,13 @@
                   <div class="demo-input-suffix base-info">
                     发货方电话：
 
+                    <!-- 发货方电话展示 -->
                     <span>{{ orderDetailShow.senderPhone }}</span>
                   </div>
                   <div class="demo-input-suffix base-info">
                     &nbsp;&nbsp;&nbsp;详细地址：
 
+                    <!-- 发货方详细地址展示 -->
                     <span>{{ orderDetailShow.senderAddress }}</span>
                   </div>
                 </div>
@@ -438,83 +467,91 @@
     </div>
   </div>
 </template>
+
 <script>
-import showOrderMapsDialog from './components/show-order-maps.vue'
-import { orderDetail } from '@/api/order'
+import showOrderMapsDialog from './components/show-order-maps.vue'// 引入地图组件
+import { orderDetail } from '@/api/order'// 引入接口函数
 export default {
   components: {
-    showOrderMapsDialog
+    showOrderMapsDialog// 注册地图组件
   },
   data() {
     return {
-      taskDispatchEstimatedEndTime: '',
-      taskDispatchestimatedStartTime: '',
-      taskPickupEstimatedEndTime: '',
-      taskPickupestimatedStartTime: '',
-      disMobile: '',
-      disName: '',
-      mobile: '',
-      name: '',
+      taskDispatchEstimatedEndTime: '', // 派送任务预计结束时间
+      taskDispatchestimatedStartTime: '', // 派送任务预计开始时间
+      taskPickupEstimatedEndTime: '', // 取件任务预计结束时间
+      taskPickupestimatedStartTime: '', // 取件任务预计开始时间
+      disMobile: '', // 派件人电话
+      disName: '', // 派件人姓名
+      mobile: '', // 取件人电话
+      name: '', // 取件人姓名
       disPathName: '', // 取件员
-      agencyName: '',
+      agencyName: '', // 代办点名称
       // 地图相关
       formData: {
-        startLat: '',
-        startLng: '',
-        endLat: '',
-        endLng: ''
+        startLat: '', // 地图起点纬度
+        startLng: '', // 地图起点经度
+        endLat: '', // 地图终点纬度
+        endLng: ''// 地图终点经度
       },
       // 地图相关
       titleInfo: {
-        pageTitle: '',
-        text: ''
+        pageTitle: '', // 地图页面标题
+        text: ''// 地图页面文本信息
       },
+      // 运单详情信息
       orderDetailShow: {
-        receiverCounty: '',
-        receiverCity: '',
-        receiverProvince: '',
-        senderProvince: '',
-        senderCity: '',
-        senderCounty: ''
+        receiverCounty: '', // 收货地址县
+        receiverCity: '', // 收货地址市
+        receiverProvince: '', // 收货地址省
+        senderProvince: '', // 发货地址省
+        senderCity: '', // 发货地址市
+        senderCounty: '' // 发货地址县
       },
-      activeNames: ['1', '2', '3', '4', '5', '6', '7'],
+
+      activeNames: ['1', '2', '3', '4', '5', '6', '7'], // 折叠面板默认展开项
+
+      // 面板列表数据，包括列名和行数据
       propTableData: {
         col: []
       },
-      wayId: ''
+      wayId: ''// 运单 id
 
     }
   },
   created() {
-    this.wayId = this.$route.query.id
-    this.getList(this.wayId)
+    this.wayId = this.$route.query.id// 获取路由参数中的运单 id
+    this.getList(this.wayId)// 调用获取运单详情函数
   },
   methods: {
     // 获取运单详情
     async getList(wayId) {
-      const { data } = await orderDetail(wayId)
-      this.orderDetailShow = data
+      const { data } = await orderDetail(wayId)// 调用接口函数获取运单详情
+      this.orderDetailShow = data// 将获取到的运单详情赋值给组件 data 中的变量 orderDetailShow
       console.log(data)
 
-      this.taskPickupEstimatedEndTime = this.orderDetailShow.taskPickup.estimatedEndTime
-      this.taskPickupestimatedStartTime = this.orderDetailShow.taskPickup.estimatedStartTime
+      this.taskPickupEstimatedEndTime = this.orderDetailShow.taskPickup.estimatedEndTime// 取件任务预计结束时间
+      this.taskPickupestimatedStartTime = this.orderDetailShow.taskPickup.estimatedStartTime// 取件任务预计开始时间
       console.log('------------', this.orderDetailShow.taskPickup.estimatedEndTime)
-      this.agencyName = this.orderDetailShow.taskPickup.agency.name
-      this.name = this.orderDetailShow.taskPickup.courier.name
-      this.mobile = this.orderDetailShow.taskPickup.courier.mobile
+      this.agencyName = this.orderDetailShow.taskPickup.agency.name// 代办点名称
+      this.name = this.orderDetailShow.taskPickup.courier.name// 取件人姓名
+      this.mobile = this.orderDetailShow.taskPickup.courier.mobile// 取件人电话
 
+      // 派送任务相关信息
+      // 如果存在派送任务，再获取相关信息
       if (this.orderDetailShow.taskDispatch) {
-        this.disName = this.orderDetailShow.taskDispatch.agency.name
-        this.disPathName = this.orderDetailShow.taskDispatch.courier.name
-        this.disMobile = this.orderDetailShow.taskDispatch.courier.mobile
-        this.taskDispatchEstimatedEndTime = this.orderDetailShow.taskDispatch.estimatedEndTime
-        this.taskDispatchestimatedStartTime = this.orderDetailShow.taskDispatch.estimatedStartTime
+        this.disName = this.orderDetailShow.taskDispatch.agency.name// 派件人姓名
+        this.disPathName = this.orderDetailShow.taskDispatch.courier.name// 取件员
+        this.disMobile = this.orderDetailShow.taskDispatch.courier.mobile// 派件人电话
+        this.taskDispatchEstimatedEndTime = this.orderDetailShow// 派送任务预计结束时间
+          .this.taskDispatchestimatedStartTime = this.orderDetailShow.taskDispatch.estimatedStartTime// 派送任务预计开始时间
       }
     }
   }
 
 }
 </script>
+
 <style rel="stylesheet/scss" lang="scss" scoped>
 @import './index.scss'
 </style>

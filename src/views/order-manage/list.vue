@@ -243,12 +243,24 @@
                     style="padding: 0"
                   >
                     <!-- 省级 -->
+                    <!--
+                        v-model="orderSearchFormData.receiverProvinceId" // 选择器绑定的值
+                        placeholder="请选择省" // 默认显示的提示文字
+                        clearable // 是否可清空选项
+                        @change="isreceiveSelCity" // 绑定 change 事件触发的函数
+                      -->
                     <el-select
                       v-model="orderSearchFormData.receiverProvinceId"
                       placeholder="请选择省"
                       clearable
                       @change="isreceiveSelCity"
                     >
+                      <!-- <
+                         v-for="item in ProvinceList" // 对 ProvinceList 数组进行循环渲染，每个 item 代表数组中的元素
+                         :key="item.id" // 为每个选项添加唯一 key 值，用于提高渲染效率
+                         :label="item.name" // 设置选项的显示文字，此处显示省份名称
+                         :value="item.id" // 设置选项的值，此处为省份 id
+                        -->
                       <el-option
                         v-for="item in ProvinceList"
                         :key="item.id"
@@ -643,56 +655,67 @@ export default {
       const res = await areaList({ parentId: this.orderSearchFormData.provinceId })
       this.CityList = res.data
     },
+    // 获取区域列表信息  异步
     async isSelDistrict() {
+      // 用 areaList 函数，传入当前市级id，获取对应区域列表
       const res = await areaList({ parentId: this.orderSearchFormData.city })
+      //  将获取到的区域列表赋值给 DistrictList 数据，用于后续操作
       this.DistrictList = res.data
     },
+    // 获取收货方所在市级列表  异步
     async isreceiveSelCity() {
+      //  调用 areaList 函数，传入收货方所在省级id，获取对应市级列表
       const res = await areaList({ parentId: this.orderSearchFormData.receiverProvinceId })
+      // 将获取到的市级列表赋值给receiverCityList数据，用于后续
       this.receiverCityList = res.data
     },
+    // 获取收货方发区级列表  异步
     async isreceiveSelCounty() {
+      // 调用areaList函数，传入收货方所在的市级id，获取对应区级列表
       const res = await areaList({ parentId: this.orderSearchFormData.receiverCityId })
+      // 将获取到区级列表赋值给receiverDistrictList数据，用于后续
       this.receiverDistrictList = res.data
     },
-    // 搜索
+    // 搜索  异步函数
     async onSearch() {
+      // 调用 orderList 函数，传入搜索条件
       const res = await orderList({
-        amount: '',
-        createTime: '',
-        estimatedArrivalTime: '',
-        id: this.orderSearchFormData.id,
-        memberId: '',
-        orderType: '',
-        page: 1,
-        pageSize: 10,
-        paymentMethod: '',
-        paymentStatus: this.orderSearchFormData.PaidStatus,
-        pickupType: '',
-        receiverAddress: '',
-        receiverCityId: this.orderSearchFormData.receiverCityId,
-        receiverCountyId: this.orderSearchFormData.receiverCountyId,
-        receiverName: this.orderSearchFormData.receiverName,
-        receiverPhone: this.orderSearchFormData.receiverPhone,
-        receiverProvinceId: this.orderSearchFormData.receiverProvinceId,
-        senderAddress: '',
-        senderCityId: this.orderSearchFormData.city,
-        senderCountyId: this.orderSearchFormData.senderCountyId,
-        senderName: this.orderSearchFormData.sendName,
-        senderPhone: this.orderSearchFormData.sendPhone,
-        senderProvinceId: this.orderSearchFormData.provinceId,
-        status: this.orderSearchFormData.orderStatus
+        amount: '', // 金额
+        createTime: '', // 创建时间
+        estimatedArrivalTime: '', // 预计到达时间
+        id: this.orderSearchFormData.id, // 运单id
+        memberId: '', // 会员id
+        orderType: '', // 订单类型
+        page: 1, // 初始页数
+        pageSize: 10, // 页面显示的数据数量
+        paymentMethod: '', // 支付方式
+        paymentStatus: this.orderSearchFormData.PaidStatus, // 支付状态
+        pickupType: '', // 取件类型
+        receiverAddress: '', // 收货人地址
+        receiverCityId: this.orderSearchFormData.receiverCityId, // 收货人的市级编号
+        receiverCountyId: this.orderSearchFormData.receiverCountyId, // 收货人的区级编号
+        receiverName: this.orderSearchFormData.receiverName, // 发货人的姓名
+        receiverPhone: this.orderSearchFormData.receiverPhone, // 发货人的电话
+        receiverProvinceId: this.orderSearchFormData.receiverProvinceId, // 发货人的省级编号
+        senderAddress: '', // 发货人的地址
+        senderCityId: this.orderSearchFormData.city, // 发货人的市级编号
+        senderCountyId: this.orderSearchFormData.senderCountyId, // 发货人的区级编号
+        senderName: this.orderSearchFormData.sendName, // 发货人的姓名
+        senderPhone: this.orderSearchFormData.sendPhone, // 发货人的电话
+        senderProvinceId: this.orderSearchFormData.provinceId, // 发货人的省级编号
+        status: this.orderSearchFormData.orderStatus// 运单状态
       })
-      this.dataList = res.data.items
+      this.dataList = res.data.items//
     },
+    // 分页条数
     handleSizeChange(pageSize) {
-      // 分页条数改变
-      this.orderSearchFormData.pageSize = pageSize
-      this.getList()
+      this.orderSearchFormData.pageSize = pageSize// 将页面条数记录下来
+      this.getList()// 调用getList函数，重新获取相应数据
     },
+    // 页码
     handleCurrentChange(page) {
-      this.orderSearchFormData.page = page
-      this.getList()
+      this.orderSearchFormData.page = page// 记录页面改变后的页码
+      this.getList()// 调用getList函数，重新获取相应数据
     }
   }
 }
@@ -711,7 +734,7 @@ export default {
   -webkit-box-pack: center;
       margin-top: 40px;
 }
-
+// 阴影
 .my-card{
   box-shadow: rgba(60, 64, 67, 0.3) 0px 1px 2px 0px, rgba(60, 64, 67, 0.15) 0px 2px 6px 2px;
 }
