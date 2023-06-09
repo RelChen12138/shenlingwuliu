@@ -205,3 +205,24 @@ export function handleDate(val) {
     )
   )
 }
+/**
+ *
+ * 列表型数据转化树形
+*/
+
+export function transListToTreeData(data, pid = 0) {
+  const arr = []
+  data.forEach(item => {
+    if (item.pid === pid) {
+      // 找到了匹配的节点
+      // 当前节点的id 和 当前节点的子节点的pid是想等的
+      const children = transListToTreeData(data, item.id) // 找到的节点的子节点
+      if (children.length) { // 如果children不为空，则将当前节点加入到子节点的列表中，并将子节点转换为树形结 0是false
+        item.children = children // 将子节点赋值给当前节点
+      }
+      arr.push(item)
+    }
+  })
+  return arr
+}
+
