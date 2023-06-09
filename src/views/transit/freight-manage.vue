@@ -232,6 +232,7 @@ export default {
       list: [],
       handleID: '',
       data: {
+        id: '',
         associatedCityList: [],
         continuousWeight: '',
         firstWeight: '',
@@ -303,14 +304,16 @@ export default {
     },
     // 编辑运费模板
     handleEdit(row) {
-      console.log(row)
-      this.dialogFormVisible = true
       this.type = 'edit'
+      console.log(row)
       const arr = row.associatedCityList.map((item) => {
+        console.log(item)
         return Number(item)
       })
-      this.date = Object.assign({}, row, { associatedCityList: arr })
-      this.data = row
+
+      this.data = Object.assign(row, { associatedCityList: arr })
+
+      this.dialogFormVisible = true
     },
     // 更改关联城市
     handleCheckedCitiesChange(value) {
@@ -319,6 +322,7 @@ export default {
     // 获取列表
     async getfreightList() {
       const res = await freightList()
+      // console.log(res)
       this.list = res.data
     },
     // 新增点击确定
@@ -338,6 +342,7 @@ export default {
         }
         if (valid) {
           const data = {
+            id: this.data.id,
             templateType: this.data.templateType,
             transportType: this.data.transportType,
             associatedCityList: this.data.associatedCityList,
@@ -345,17 +350,22 @@ export default {
             continuousWeight: this.data.continuousWeight,
             lightThrowingCoefficient: this.data.lightThrowingCoefficient
           }
-          if (this.type === 'add') {
-            await changefright(data)
-            this.$message({
-              message: '操作成功！',
-              type: 'success'
-            })
-            this.dialogFormVisible = false
-            this.getfreightList()
-          } else {
-            await
-          }
+          await changefright(data).then((res) => {
+            console.log(data)
+            if (String(res.code) === '200') {
+              this.$message({
+                message: '操作成功！',
+                type: 'success'
+              })
+              this.dialogFormVisible = false
+              this.getfreightList()
+            } else {
+              this.$message({
+                message: res.msg,
+                type: 'error'
+              })
+            }
+          })
         } else {
           this.$message.error('*号为必填项!')
         }
