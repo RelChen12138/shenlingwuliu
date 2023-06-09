@@ -98,6 +98,7 @@
 }
 .app-container {
   .order-box {
+    box-shadow: rgba(60, 64, 67, 0.3) 0px 1px 2px 0px, rgba(60, 64, 67, 0.15) 0px 2px 6px 2px;
     box-shadow: none;
     /deep/ .el-card__body {
       padding: 25px 44px;
@@ -744,7 +745,8 @@
   stroke: rgba(40, 193, 64, 1);
 }
 
-//订单跟踪（运输流）
+
+//订单跟踪（运输流） 
 /deep/ .logistics-orderInfo {
   display: flex;
   flex-direction: row-reverse;
