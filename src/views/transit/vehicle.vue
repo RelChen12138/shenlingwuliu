@@ -4,17 +4,21 @@
     <div class="first-div">
       <!-- 车辆类型表单 -->
       <el-form
+        ref="resetform"
         :inline="true"
         :model="obj"
+        :rules="rules"
         class="demo-form-inline"
         style="width: 100%;"
       >
         <el-form-item
+          prop="truckTypeId"
           label="车辆类型"
           style="width: 30%;"
         >
           <el-select
             v-model="obj.truckTypeId"
+            clearable
             placeholder="请选择"
             style="width: 400px;"
           >
@@ -27,6 +31,7 @@
           </el-select>
         </el-form-item>
         <el-form-item
+          prop="licensePlate"
           label="车牌号码"
           style="width: 30%;"
         >
@@ -40,11 +45,12 @@
         <el-form-item>
           <el-button
             style="width: 90px;"
-            type="primary"
+            type="warning"
             @click="search"
           >查询</el-button>
           <el-button
             style="width: 90px;"
+            @click="clearform"
           >重置</el-button>
         </el-form-item>
       </el-form>
@@ -67,7 +73,10 @@
     <!-- 主体表格 -->
     <div class="main">
       <div class="add-car">
-        <el-button type="primary">新增车辆</el-button>
+        <el-button
+          type="warning"
+          @click="addCar"
+        >新增车辆</el-button>
       </div>
       <div class="table">
         <el-table
@@ -107,6 +116,10 @@
             label="车辆状态"
           >
             <template v-slot="{row}">
+              <span
+                class="yuandian"
+                :class="{activeColor:row.workStatus === 1}"
+              ></span>
               <span>{{ row.workStatus| filterStatus }}</span>
             </template>
           </el-table-column>
@@ -133,9 +146,17 @@
             prop="address"
             label="操作"
           >
-            <el-button type="text">查看详情</el-button>
-            <el-button type="text">启用</el-button>
-            <el-button type="text">配置司机</el-button>
+            <template v-slot="{row}">
+              <el-button
+                type="text"
+                @click="openDetail(row)"
+              >查看详情</el-button>
+              <el-button
+                type="text"
+                :class="{activeColorfont:row.workStatus === 1}"
+              >{{ row.workStatus| filterStatusT }}</el-button>
+              <el-button type="text">配置司机</el-button>
+            </template>
           </el-table-column>
         </el-table>
       </div>
@@ -159,16 +180,28 @@
         </el-row>
       </div>
     </div>
+    <VehicleAdd
+      ref="addDialog"
+      :car-type-list="carTypeList"
+      @update="init"
+    ></VehicleAdd>
   </div>
 </template>
 <script>
+import VehicleAdd from '@/views/transit/components/vehicle-add.vue'
 import { truckList, getCarTypeList } from '@/api/transit'
 import { getBadorGoodcarList } from '@/api/vehicleManagement.js'
 export default {
   name: 'Vehicle',
+  components: {
+    VehicleAdd
+  },
   filters: {
     filterStatus(v) {
       return v === 1 ? '启用' : '停用'
+    },
+    filterStatusT(v) {
+      return v === 1 ? '停用' : '启用'
     }
   },
   data () {
@@ -186,7 +219,12 @@ export default {
         truckTypeId: '',
         workStatus: null
       },
-      activetype: 'all'
+      activetype: 'all',
+      rules: {
+        licensePlate: [{ min: 7, max: 7, message: '请输入正确的车牌号', trigger: 'blur' }],
+        truckTypeId: [{ }]
+      },
+      isOpen: false
     }
   },
   async created() {
@@ -214,14 +252,12 @@ export default {
     this.usenumber = rest.data.counts
     // 获取车辆类型下拉
     const resTr = await getCarTypeList()
-    // console.log(resTr)
     this.carTypeList = resTr.data
   },
   methods: {
     // 渲染数据一
     async init () {
       const { data } = await truckList(this.obj)
-      this.totalnumber = +data.counts
       this.carList = data.items
       this.activetotal = +data.counts
     },
@@ -230,21 +266,17 @@ export default {
       const res = await getBadorGoodcarList(this.obj)
       this.activetotal = +res.data.counts
       this.carList = res.data.items
-      if (this.activetype === 'can-use') {
-        this.usenumber = res.data.counts
-      } else {
-        this.stopnumber = res.data.counts
-      }
     },
+    // 全部 可用 停用
     async handleisActive(type) {
-      this.activetype = type
+      this.activetype = type // 状态管理 记录目前点击的是哪一个
       this.obj.page = 1
       this.obj.pageSize = 10
-      this.obj.workStatus = null
-      this.obj.licensePlate = null
-      this.obj.truckTypeId = ''
       if (type === 'all') {
-        this.init()
+        this.obj.workStatus = null
+        const { data } = await truckList(this.obj)
+        this.carList = data.items
+        this.activetotal = +data.counts
       } else if (type === 'can-use') {
         this.obj.workStatus = 1
         this.initTwo()
@@ -253,14 +285,7 @@ export default {
         this.initTwo()
       }
     },
-    tableRowClassName({ row, rowIndex }) {
-      if (rowIndex === 1) {
-        return 'warning-row'
-      } else if (rowIndex === 3) {
-        return 'success-row'
-      }
-      return ''
-    },
+    // 分页器每一页显示的数量
     handleSizeChange(newpageSize) {
       this.obj.pageSize = newpageSize
       if (this.activetype === 'all') {
@@ -269,6 +294,7 @@ export default {
         this.initTwo()
       }
     },
+    // 分页器 页数变化渲染
     handleCurrentChange(newpage) {
       this.obj.page = newpage
       if (this.activetype === 'all') {
@@ -281,10 +307,19 @@ export default {
     async search () {
       this.obj.page = 1
       this.obj.pageSize = 10
-      this.obj.workStatus = null
-      const { data } = await truckList(this.obj)
-      this.carList = data.items
-      this.activetotal = +data.counts
+      this.init()
+    },
+    // 重置表单
+    clearform () {
+      this.$refs.resetform.resetFields()
+    },
+    // 新增车辆
+    addCar () {
+      this.$refs.addDialog.getOpen()
+    },
+    openDetail(row) {
+      console.log(row)
+      this.$router.push(`vehicle-detail/?id=${row.id}`)
     }
   }
 
@@ -401,6 +436,13 @@ export default {
       .add-car{
         margin-bottom: 20px;
       }
+      .yuandian{
+        display: inline-block;
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background-color: #e15536;
+      }
       .fenyeqi{
         height: 60px;
         width: 100%;
@@ -415,6 +457,12 @@ export default {
       background-color: #ffeeeb;
       color: #e15536;
     }
+    .activeColor{
+      background-color: #1dc779 !important;
+    }
+    .activeColorfont{
+      color: #e03a66;
+    }
     .el-table .warning-row {
     background: oldlace;
   }
@@ -422,8 +470,4 @@ export default {
   .el-table .success-row {
     background: #f0f9eb;
   }
-  .el-table__cell {
-    height: 35px;
-  }
-
 </style>
