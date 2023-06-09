@@ -1,0 +1,264 @@
+{
+    "code": 200,
+    "msg": "ok",
+    "data": {
+        "counts": "23",
+        "pageSize": 10,
+        "pages": "3",
+        "page": 1,
+        "items": [
+            {
+                "id": "1577846001713344514",
+                "userId": "1025112013736764417",
+                "name": "司广州",
+                "account": "gzsj",
+                "agency": {
+                    "id": null,
+                    "name": "广州分拣中心",
+                    "type": null,
+                    "subAgencies": null
+                },
+                "mobile": "18877770000",
+                "truck": {
+                    "id": "1575257934065905665",
+                    "truckTypeId": "1575257460197634049",
+                    "truckTypeName": null,
+                    "brand": null,
+                    "licensePlate": "京b666399",
+                    "deviceGpsId": "111",
+                    "allowableLoad": 3331.00,
+                    "allowableVolume": 334.00,
+                    "truckLicenseId": "1575668857754820610",
+                    "status": 1,
+                    "runStatus": 1,
+                    "workStatus": 1,
+                    "transportLineName": null,
+                    "driverName": null,
+                    "driverNum": 2,
+                    "loadingRatio": null,
+                    "picture": "https://yjy-teach-oss.oss-cn-beijing.aliyuncs.com/slwl/0258ca39-d7a7-48fa-b896-fc26258722fc.png,https://yjy-teach-oss.oss-cn-beijing.aliyuncs.com/slwl/2e24aa54-b6fe-4bf5-aa01-f5e7b6992725.png"
+                },
+                "workStatus": 1,
+                "age": 36,
+                "workDate": null,
+                "picture": null
+            },
+            {
+                "id": "1577846629915226114",
+                "userId": "1025104550799061921",
+                "name": "司深圳",
+                "account": "szsj001",
+                "agency": {
+                    "id": null,
+                    "name": "深圳分拣中心",
+                    "type": null,
+                    "subAgencies": null
+                },
+                "mobile": "18877776666",
+                "truck": {
+                    "id": "1575257934065905665",
+                    "truckTypeId": "1575257460197634049",
+                    "truckTypeName": null,
+                    "brand": null,
+                    "licensePlate": "京b666399",
+                    "deviceGpsId": "111",
+                    "allowableLoad": 3331.00,
+                    "allowableVolume": 334.00,
+                    "truckLicenseId": "1575668857754820610",
+                    "status": 1,
+                    "runStatus": 1,
+                    "workStatus": 1,
+                    "transportLineName": null,
+                    "driverName": null,
+                    "driverNum": 2,
+                    "loadingRatio": null,
+                    "picture": "https://yjy-teach-oss.oss-cn-beijing.aliyuncs.com/slwl/0258ca39-d7a7-48fa-b896-fc26258722fc.png,https://yjy-teach-oss.oss-cn-beijing.aliyuncs.com/slwl/2e24aa54-b6fe-4bf5-aa01-f5e7b6992725.png"
+                },
+                "workStatus": 0,
+                "age": 39,
+                "workDate": null,
+                "picture": null
+            },
+            {
+                "id": "1577846802615693313",
+                "userId": "1025104059952247329",
+                "name": "司华南",
+                "account": "hnsj001",
+                "agency": {
+                    "id": null,
+                    "name": "华南转运中心",
+                    "type": null,
+                    "subAgencies": null
+                },
+                "mobile": "17788887777",
+                "truck": {
+                    "id": "1665687898827026433",
+                    "truckTypeId": "1575066321985286145",
+                    "truckTypeName": null,
+                    "brand": null,
+                    "licensePlate": "京S88888",
+                    "deviceGpsId": "1324536475",
+                    "allowableLoad": 33.00,
+                    "allowableVolume": 34.00,
+                    "truckLicenseId": "1665704580664553473",
+                    "status": 1,
+                    "runStatus": 1,
+                    "workStatus": 0,
+                    "transportLineName": null,
+                    "driverName": null,
+                    "driverNum": 1,
+                    "loadingRatio": null,
+                    "picture": "https://yjy-teach-oss.oss-cn-beijing.aliyuncs.com/slwl/c053ec8d-5a5f-46f7-a42f-d593d08af650.jpg,https://yjy-teach-oss.oss-cn-beijing.aliyuncs.com/slwl/616f69ff-be1b-45c7-8c9e-31d5409d68ba.jpg"
+                },
+                "workStatus": 0,
+                "age": 699,
+                "workDate": null,
+                "picture": null
+            },
+            {
+                "id": "1575351629087846402",
+                "userId": "1024997316655995489",
+                "name": "司东北",
+                "account": "dbsj",
+                "agency": {
+                    "id": null,
+                    "name": "东北转运中心",
+                    "type": null,
+                    "subAgencies": null
+                },
+                "mobile": "17788887777",
+                "truck": null,
+                "workStatus": 0,
+                "age": null,
+                "workDate": null,
+                "picture": null
+            },
+            {
+                "id": "1575352172438958082",
+                "userId": "1024994711959651169",
+                "name": "司武汉",
+                "account": "whsj",
+                "agency": {
+                    "id": null,
+                    "name": "武汉分拣中心",
+                    "type": null,
+                    "subAgencies": null
+                },
+                "mobile": "17788887777",
+                "truck": null,
+                "workStatus": 0,
+                "age": 34,
+                "workDate": null,
+                "picture": null
+            },
+            {
+                "id": "1575352971453870081",
+                "userId": "1024994498993865153",
+                "name": "司华中",
+                "account": "hzsj",
+                "agency": {
+                    "id": null,
+                    "name": "华中转运中心",
+                    "type": null,
+                    "subAgencies": null
+                },
+                "mobile": "18877776666",
+                "truck": {
+                    "id": "1575258705310330881",
+                    "truckTypeId": "1575066321985286145",
+                    "truckTypeName": null,
+                    "brand": null,
+                    "licensePlate": "陕A34454",
+                    "deviceGpsId": "234456",
+                    "allowableLoad": 55.00,
+                    "allowableVolume": 100.00,
+                    "truckLicenseId": "1575084497594822658",
+                    "status": 1,
+                    "runStatus": 1,
+                    "workStatus": 1,
+                    "transportLineName": null,
+                    "driverName": null,
+                    "driverNum": 3,
+                    "loadingRatio": null,
+                    "picture": "https://yjy-teach-oss.oss-cn-beijing.aliyuncs.com/slwl/ee2f9797-435d-4a85-9e84-e9f2da4681e5.png"
+                },
+                "workStatus": 0,
+                "age": 2254,
+                "workDate": null,
+                "picture": null
+            },
+            {
+                "id": "1575353581473443842",
+                "userId": "1024987378881793537",
+                "name": "司沈阳",
+                "account": "sysj001",
+                "agency": {
+                    "id": null,
+                    "name": "沈阳分拣中心",
+                    "type": null,
+                    "subAgencies": null
+                },
+                "mobile": "13311111222",
+                "truck": null,
+                "workStatus": 0,
+                "age": 32,
+                "workDate": null,
+                "picture": null
+            },
+            {
+                "id": "1575424188991086594",
+                "userId": "1024987310187482529",
+                "name": "宏晓誉",
+                "account": "bjsj001",
+                "agency": {
+                    "id": null,
+                    "name": "北京分拣中心",
+                    "type": null,
+                    "subAgencies": null
+                },
+                "mobile": "18737437483",
+                "truck": null,
+                "workStatus": 0,
+                "age": 42,
+                "workDate": null,
+                "picture": null
+            },
+            {
+                "id": "1575431288592998402",
+                "userId": "1024986455853892225",
+                "name": "漼时宜",
+                "account": "bjsj002",
+                "agency": {
+                    "id": null,
+                    "name": "北京分拣中心",
+                    "type": null,
+                    "subAgencies": null
+                },
+                "mobile": "17898989565",
+                "truck": null,
+                "workStatus": 0,
+                "age": 32,
+                "workDate": null,
+                "picture": null
+            },
+            {
+                "id": "1575431736041349122",
+                "userId": "1024986076978217057",
+                "name": "长孙杰",
+                "account": "hbsj002",
+                "agency": {
+                    "id": null,
+                    "name": "华北转运中心",
+                    "type": null,
+                    "subAgencies": null
+                },
+                "mobile": "13987675455",
+                "truck": null,
+                "workStatus": 0,
+                "age": 32,
+                "workDate": null,
+                "picture": null
+            }
+        ]
+    }
+}

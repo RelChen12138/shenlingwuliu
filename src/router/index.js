@@ -318,7 +318,7 @@ function get(name) {
 router.beforeEach((to, from, next) => {
   NProgress.start()
   document.documentElement.scrollTop = 0
-  console.dir(document.documentElement, 'document.documentElement')
+  // console.dir(document.documentElement, 'document.documentElement')
   if (whiteList.indexOf(to.path) !== -1) {
     next()
   } else {
