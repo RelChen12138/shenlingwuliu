@@ -38,17 +38,15 @@
               label="工作模式"
             >
               <el-select
-                v-model="formInline.agencyName"
+                v-model="formInline.workPatternId"
                 placeholder="请选择工作模式"
                 clearable
               >
                 <el-option
-                  label="区域一"
-                  value="shanghai"
-                ></el-option>
-                <el-option
-                  label="区域二"
-                  value="beijing"
+                  v-for="option in dropDownList"
+                  :key="option.id"
+                  :label="option.name"
+                  :value="option.id"
                 ></el-option>
               </el-select>
             </el-form-item>
@@ -74,20 +72,17 @@
               label-width="100px"
               label="所属机构"
             >
-              <el-select
-                v-model="formInline.region"
+              <treeselect
+                v-model="formInline.agencyId"
                 placeholder="请选择所属机构"
-                clearable
+                no-options-text="暂无数据"
+                no-results-text="暂无数据"
+                :multiple="false"
+                :options="treeData"
+                :show-count="true"
+                :normalizer="normalizer"
               >
-                <el-option
-                  label="区域一"
-                  value="shanghai"
-                ></el-option>
-                <el-option
-                  label="区域二"
-                  value="beijing"
-                ></el-option>
-              </el-select>
+              </treeselect>
             </el-form-item>
           </el-col>
           <el-col :span="8">
@@ -102,17 +97,20 @@
         </el-row>
       </el-form>
     </el-card>
+    <!-- //排班管理 -->
     <el-card class="box-card1">
       <el-button
         type="danger"
+        @click="$router.push('workArrange-setting')"
       >排班设定</el-button>
-      <el-button>绑定排班</el-button>
+      <el-button @click="dialogVisible = true">绑定排班</el-button>
       <el-table
         ref="multipleTable"
         :data="tableData"
         tooltip-effect="dark"
         style="width: 100%"
         class="table1"
+        @selection-change="handleSelectionChange"
       >
         <el-table-column
           fixed
@@ -193,51 +191,135 @@
         </el-pagination>
       </div>
     </el-card>
+    <!-- //绑定排班 -->
+    <el-dialog
+      title="人工调整"
+      :visible.sync="dialogVisible"
+      width="40%"
+      :before-close="handleClose"
+      class="tanchu"
+    >
+      <el-form
+        :model="workSchedulingsForm"
+        class="demo-form-inline"
+        size="medium"
+      >
+        <el-row>
+          <el-radio
+            v-model="workSchedulingsForm.workPatternType"
+            label="1"
+            @input="changeWorkPatternType"
+          >礼拜制</el-radio>
+          <el-radio
+            v-model="workSchedulingsForm.workPatternType"
+            label="2"
+          >连续制</el-radio>
+        </el-row>
+        <el-form-item
+          label-width="100px"
+          label="工作模式"
+          class="inputbox"
+        >
+          <el-select
+            v-model="workSchedulingsForm.workPatternId"
+            placeholder="请选择工作模式"
+            clearable
+          >
+            <el-option
+              v-for="option in dropDownList1"
+              :key="option.id"
+              :label="option.name"
+              :value="option.id"
+            ></el-option>
+          </el-select>
+        </el-form-item>
+      </el-form>
+      <span
+        slot="footer"
+        class="dialog-footer"
+      >
+        <el-button @click="btnPeopleSetConfirm">确认</el-button>
+        <el-button
+          type="primary"
+          @click="handleClose"
+        >取消</el-button>
+      </span>
+    </el-dialog>
+
   </div>
 </template>
 <script>
-import { workManage } from '@/api/transit'
+// import the component
+import Treeselect from '@riophae/vue-treeselect'
+// import the styles
+import '@riophae/vue-treeselect/dist/vue-treeselect.css'
+// import the component
+
+import { workManage, selectWorkHistoryList, peopleSet } from '@/api/transit'
+import { agencyList } from '@/api/institutions'
+
+// import { transListToTreeData } from '@/utils'
 // import { transListToTreeData } from '@/utils'
 export default {
+  // register the component
+  components: { Treeselect },
   data() {
     return {
+
+      dialogVisible: false, // 弹框显示隐藏
+      dropDownList: [], // 下拉工作列表
+      dropDownList1: [], // 下拉工作列表 第二个下拉框
       formInline: {
-        employeeNumber: '',
-        name: '',
-        region: '',
-        month: '',
-        agencyName: ''
+        employeeNumber: '', // 员工账号
+        name: '', // 员工姓名
+        month: '', // 月份
+        agencyId: '', // 所属机构
+        workPatternId: '' // 工作模式id 默认0：无工作
       },
-      tableData: [],
-      multipleSelection: [],
+      tableData: [], // 排班信息
+
       data: {
         counts: 0, // 总条目数
         pages: 0, // 总页数
-        page: 0, // 页码 // 当前页码数
+        page: 1, // 页码 // 当前页码数
         pageSize: 10 // 当前页面需要的数据条数
+      },
+      treeData: [], // 所属机构树
+      length: '',
+      workSchedulingsForm: { // 批量管理员工
+        userIdList: [], // 选择的员工id数组
+        userType: '',
+        workPatternId: '', // 工作模式ID
+        workPatternType: '1' // 工作模式类型1:礼拜制，2：连续制
       }
 
     }
   },
   created() {
+    this.reset()
     this.initData()
+    this.agencyList()
+    this.selectWorkHistoryList()
+    this.length = new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0).getDate()
   },
   methods: {
     onSubmit() {
       console.log('submit!')
     },
-    async  initData() {
+    async initData() {
       // 添加搜索
-      const res = await workManage({
+      const res = await workManage({ // 获取排班信息
         ...this.data,
         ...this.formInline
+
       })
-      console.log(res)
+      console.log(res.data.items)
       this.tableData = res.data.items
       this.data.counts = res.data.counts // 总条目数
       this.data.pages = res.data.pages // 总页数 （每页显示的条目数）
       this.data.page = res.data.page
       this.data.pageSize = res.data.pageSize // 当前页面需要的数据条数
+      this.length = new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0).getDate()
     },
     // 分页跳转
     handleCurrentChange(current) {
@@ -245,12 +327,114 @@ export default {
       this.initData()
     },
     // 添加重置方法
+    //  {
+    //   this.formInline.employeeNumber = '' // 员工账号
+    //   this.formInline.name = '' // 员工姓名
+    //   this.formInline.agencyId = '' // 所属机构
+    //   this.formInline.month = '' // 月份
+    //   this.formInline.workPatternId = '' // 工作模式
+    //   this.initData()
+    // },
+    // 重置表单
     reset() {
-      this.formInline.employeeNumber = ''
-      this.formInline.name = ''
-      this.formInline.region = ''
-      this.formInline.month = ''
-      this.initData()
+      this.formInline = {
+        page: 0, // 页码
+        pageSize: 10, // 页面大小
+        name: '', // 员工姓名
+        employeeNumber: '', // 员工账号
+        agencyId: '', // 所属机构
+        month: '', // 月份
+        workPatternId: '', // 工作模式ID 默认 0 ：无工作模式
+        userType: '' // 用户类型：1：员工，2：快递员，3:司机
+      }
+    },
+    // 选择框
+    handleSelectionChange(arr) {
+      const newArr = []
+      arr.forEach(item => {
+        newArr.push(item.id)
+      })
+      this.workSchedulingsForm.userIdList = newArr
+    },
+    // 获取工作模式列表
+    async selectWorkHistoryList() {
+      try {
+        const res = await selectWorkHistoryList()
+
+        this.dropDownList = [...res.data['1'], ...res.data['2']]
+
+        if (this.workSchedulingsForm.workPatternType === '1') {
+          this.dropDownList1 = [...res.data['1']]
+        } else {
+          this.dropDownList1 = [...res.data['2']]
+        }
+      } catch (error) {
+        console.log(error)
+      }
+    },
+    // 判断当前工作模式
+    judgmentWorkPatternById(id) {
+      const findWork = []
+      this.dropDownList.forEach(item => {
+        if (item.id === id) {
+          findWork.push(item)
+        }
+      })
+      if (findWork.length === 0) {
+        return '暂无安排'
+      } else {
+        const res = findWork[0]
+        const name = res.name
+        return name
+      }
+    },
+    // 绑定排班单选按钮切换
+    changeWorkPatternType() {
+      this.selectWorkHistoryList()
+    },
+    // 绑定排班确认按钮
+    async btnPeopleSetConfirm() {
+      try {
+        await peopleSet(this.workSchedulingsForm)// 人工调整
+        this.initData() // 获取排班信息
+        this.handleClose()
+        this.$message.success('绑定成功')
+      } catch (error) {
+        console.log(error)
+      }
+    },
+    handleOpen() {
+      if (this.workSchedulingsForm.userIdList.length === 0) {
+        this.$message.error('请选择排班员工')
+        return 0
+      } else {
+        this.dialogVisible = true
+      }
+    },
+
+    // 获取树状机构信息
+    async agencyList() {
+      const res = await agencyList()
+      console.log(res)
+      this.treeData = JSON.parse(res.data)
+    },
+    // 声明一个“标准化器”，将你的数据标准化
+    normalizer(node) {
+      const label = node.name || '请选择所属机构'
+      return {
+        id: node.id,
+        label, // 将 name 属性作为标签显示
+        children: node.children
+      }
+    },
+    handleClose() {
+      this.dialogVisible = false
+      this.workSchedulingsForm = {
+        userIdList: [], // 选择的员工id数组
+        userType: '',
+        workPatternId: '', // 工作模式ID
+        workPatternType: '1' // 工作模式类型1:礼拜制，2：连续制
+      }
     }
 
   }
@@ -398,6 +582,13 @@ export default {
 .block{
   text-align: center;
 }
+/deep/ .el-dialog__footer {
+  margin-top: 136px;
+}
+.inputbox{
+  margin-top: 40px;
+}
+
 </style>
 
 <style></style>
