@@ -351,12 +351,15 @@
                     v-if="driverCardInfo.initialCertificateDate"
                     label="初次领证日期:"
                   >
-                    <el-input
+                    <el-date-picker
+                      id="date-picker"
                       v-model="driverCardInfo.initialCertificateDate"
+                      type="date"
                       inline="true"
-                      style="width: 203px"
-                      type="search"
-                    ></el-input>
+                      style="width: 203px; height: 40px;"
+                      placeholder="选择日期"
+                    >
+                    </el-date-picker>
                   </el-form-item>
                 </el-col>
               </el-row>
@@ -544,6 +547,19 @@ export default {
         vertical-align: top;
       }
     }
+    #date-picker{
+      width: 203px;
+      height: 40px;
+    }
+    /deep/ .el-input--suffix .el-input__inner{
+      width: 203px;
+      height: 40px;
+      display: inline-block;
+    }
+   /deep/ .el-date-editor {
+    width: 203px !important;
+    height: 40px;
+   }
   }
 }
 .style2 .active {
