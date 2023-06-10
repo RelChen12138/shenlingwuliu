@@ -1,198 +1,250 @@
 <!-- 车型添加 -->
 <template>
-  <div>
-    <el-dialog
-      title="新增车型"
-      :visible.sync="sysloading"
-      width="40%"
-      :before-close="handleClose"
-      @cloce="handleClose"
+  <el-dialog
+    :title="id !== null ? '编辑车型' : '新增车型'"
+    :visible="showDialog"
+    width="40%"
+    @close="onClose"
+  >
+    <el-form
+      ref="ruleForm"
+      label-width="150px"
+      :model="CarDetailsData"
+      :rules="Carrules"
     >
-      <!-- //表单内容 -->
-      <el-form
-        v-if="sysloading"
-        ref="addfrom"
-        :rules="rules"
-        :model="cardata"
-        label-width="120px"
+      <el-form-item
+        label="车辆类型"
+        prop="name"
       >
-        <!-- //车辆类型 -->
-        <el-form-item
-          label="车辆类型"
-          prop="name"
+        <el-input
+          v-model="CarDetailsData.name"
+          placeholder="请输入车辆类型"
+        ></el-input>
+      </el-form-item>
+      <el-form-item
+        label="应载重量"
+        prop="allowableLoad"
+      >
+        <el-input
+          v-model="CarDetailsData.allowableLoad"
+          maxlength="10"
+          placeholder="请输入车型载重"
         >
-          <el-input
-            v-model="cardata.name"
-            placeholder="请输入车辆类型"
-            style="width:400px"
-          ></el-input>
-        </el-form-item>
-        <!-- 车辆载重 -->
-        <el-form-item
-          label="车辆载重"
-          prop="allowableLoad"
+          <template slot="suffix"><span class="righttext">吨</span></template>
+        </el-input>
+      </el-form-item>
+      <el-form-item
+        label="应载体积"
+        prop="allowableVolume"
+      >
+        <el-input
+          v-model="CarDetailsData.allowableVolume"
+          maxlength="10"
+          placeholder="请输入车型体积"
         >
-          <el-input
-            v-model="cardata.allowableLoad"
-            placeholder="请输入车辆载重"
-            style="width:400px"
-          ><span
+          <template slot="suffix"><span class="righttext">立方</span></template>
+        </el-input>
+      </el-form-item>
+      <el-form-item
+        label="长"
+        prop="measureLong"
+      >
+        <el-input
+          v-model="CarDetailsData.measureLong"
+          placeholder="请输入长"
+          maxlength="10"
+        >
+          <!-- <template slot="prefix">0.0</template> -->
+          <template slot="suffix"><span class="righttext">米</span></template>
+        </el-input>
+      </el-form-item>
+      <el-form-item
+        label="宽"
+        prop="measureWidth"
+      >
+        <el-input
+          v-model="CarDetailsData.measureWidth"
+          placeholder="请输入宽"
+          maxlength="10"
+        >
+          <template slot="suffix"><span class="righttext">米</span></template>
+        </el-input>
+      </el-form-item>
+      <el-form-item
+        label="高"
+        prop="measureHigh"
+      >
+        <el-input
+          v-model="CarDetailsData.measureHigh"
+          placeholder="请输入高"
+          maxlength="10"
+        >
+          <template
             slot="suffix"
-            style="color:black"
-          >吨</span></el-input>
-        </el-form-item>
-        <!-- 车辆体积 -->
-        <el-form-item
-          label="车辆体积"
-          prop="allowableVolume"
-        >
-          <el-input
-            v-model="cardata.allowableVolume"
-            placeholder="请输入车辆体积"
-            style="width:400px"
-          ><span
-            slot="suffix"
-            style="color:black"
-          >立方</span></el-input>
-        </el-form-item>
-        <!-- 长 -->
-        <el-form-item
-          label="长"
-          prop="measureLong"
-        >
-          <el-input
-            v-model="cardata.measureLong"
-            style="width:400px"
-            placeholder="请输入长"
-          >
-            <span
-              slot="suffix"
-              style="color:black"
-            >米</span>
-          </el-input>
-        </el-form-item>
-        <!-- 宽 -->
-        <el-form-item
-          label="宽"
-          prop="measureWidth"
-        >
-          <el-input
-            v-model="cardata.measureWidth"
-            style="width:400px"
-            placeholder="请输入长"
-          >
-            <span
-              slot="suffix"
-              style="color:black"
-            >米</span>
-          </el-input>
-        </el-form-item>
-        <!-- 高 -->
-        <el-form-item
-          label="高"
-          prop="measureHigh"
-        >
-          <el-input
-            v-model="cardata.measureHigh"
-            style="width:400px"
-            placeholder="请输入高"
-          >
-            <span
-              slot="suffix"
-              style="color:black"
-            >米</span>
-          </el-input>
-        </el-form-item>
-      </el-form>
+          ><span class="righttext">米</span></template></el-input>
+      </el-form-item>
+    </el-form>
+    <template #footer>
       <el-row
         type="flex"
         justify="center"
       >
         <el-button
-          type="primary"
-          @click="affaddcar"
-        >确认</el-button>
-        <el-button @click="handleClose">取消</el-button>
+          style="background: #e15536; width: 80px; color: #fff"
+          @click="submit"
+        >确定</el-button>
+        <el-button
+          style="width: 80px; color: #000"
+          @click="onClose"
+        >取消</el-button>
       </el-row>
-    </el-dialog>
-  </div>
+    </template>
+  </el-dialog>
 </template>
 <script>
-import { add, update } from '@/api/transit'
-import { getcarlist } from '@/api/carID'
+import { add, detail, update } from '@/api/transit'
+
 export default {
   name: 'CarModelsAdd',
   props: {
-    showaddcar: {
+    showDialog: {
       type: Boolean,
       default: false
-    },
-    carid: {
-      type: String,
-      default: ''
     }
   },
   data() {
+    // 应载重量 应载体积的自定义校验
+    const Numonehundred = (rule, value, callback) => {
+      if (Number.isInteger(Number(value)) && Number(value) < 101 && Number(value) > 0) {
+        callback()
+      } else {
+        callback(new Error('只能输入1-100之间的正整数，请重新输入'))
+      }
+    }
+
+    const perseFloatNum = (rule, value, callback) => {
+      const reg = /^\d+.?\d{0,2}$/
+      if (reg.test(value)) {
+        callback()
+      } else {
+        callback(new Error('只能输入数字类型，最多保留两位小数，请重新输入'))
+      }
+    }
+
+    // 表单长度的自定义校验
+    const LongMax = (rule, value, callback) => {
+      if (Number(value) < 100) {
+        callback()
+      } else {
+        callback(new Error('长最多只能输入100，请重新输入'))
+      }
+    }
+
+    // 表单宽度的自定义校验
+    const WidthMax = (rule, value, callback) => {
+      if (Number(value) < 101) {
+        callback()
+      } else {
+        callback(new Error('宽最多只能输入100，请重新输入'))
+      }
+    }
+
+    // 表单高度的自定义校验
+    const HightMax = (rule, value, callback) => {
+      if (Number(value) < 101) {
+        callback()
+      } else {
+        callback(new Error('高最多只能输入100，请重新输入'))
+      }
+    }
+
     return {
-      // 表单内容默认隐藏
-      sysloading: false,
-      cardata: {
+      CarDetailsData: {
         name: '',
-        allowableVolume: '',
         allowableLoad: '',
+        allowableVolume: '',
         measureLong: '0.0',
         measureWidth: '0.0',
         measureHigh: '0.0'
       },
-      rules: {
-        name: [{ required: true, message: '车辆类型不能为空', trigger: ['blur', 'change'] }],
-        allowableVolume: [{ required: true, message: '车辆体积不能为空', trigger: ['blur', 'change'] }],
-        allowableLoad: [{ required: true, message: '车辆载重不能为空', trigger: ['blur', 'change'] }]
-      },
-      isEdit: false
+      id: null,
+      // 表单校验规则
+      Carrules: {
+        name: [
+          { required: true, message: '车型名称不能为空', trigger: 'blur' }
+        ],
+        allowableLoad: [
+          { required: true, message: '应载重量不能为空', trigger: 'blur' },
+          { validator: Numonehundred, trigger: 'blur' }
+
+        ],
+        allowableVolume: [
+          { required: true, message: '应载体积不能为空', trigger: 'blur' },
+          { validator: Numonehundred, trigger: 'blur' }
+        ],
+        measureLong: [
+          { validator: LongMax, trigger: 'blur' },
+          { validator: perseFloatNum, trigger: 'blur' }
+        ],
+        measureWidth: [
+          { validator: WidthMax, trigger: 'blur' },
+          { validator: perseFloatNum, trigger: 'blur' }
+        ],
+        measureHigh: [
+          { validator: HightMax, trigger: 'blur' },
+          { validator: perseFloatNum, trigger: 'blur' }
+
+        ]
+      }
     }
-  },
-  created() {
-    // this.getcar()
-    // console.log(this.carid)
   },
   methods: {
-    // 弹层显示
-    looksysloading(isEdit = false, id) {
-      this.isEdit = isEdit
-      this.sysloading = true
-      if (this.isEdit) {
-        this.getcar(id)
+    // 弹窗关闭
+    onClose() {
+      this.$emit('update:showDialog', false)
+      this.$refs.ruleForm.resetFields()
+      this.id = null
+      this.CarDetailsData = {
+        name: '',
+        allowableLoad: '',
+        allowableVolume: '',
+        measureLong: '0.0',
+        measureWidth: '0.0',
+        measureHigh: '0.0'
       }
-    },
-    // 弹框关闭
-    handleClose() {
-      this.sysloading = false
-      this.$refs.addfrom.resetFields()
     },
     // 获取车辆详情
-    async getcar(id) {
-      console.log(id)
-      const { data } = await getcarlist(id)
-      this.cardata = data
+    async gatCarDetails(id) {
+      this.id = id
+      const res = await detail(id)
+      this.CarDetailsData = res.data
+      // console.log(res.data)
     },
-    // 新增点击确认按钮
-    async affaddcar() {
-      if (this.isEdit) {
-        // 修改
-        await update(this.carid, this.cardata)
-        this.$message.success('修改成功')
-        this.handleClose()
-        this.$emit('refesg')
-        return
+    async submit() {
+      await this.$refs.ruleForm.validate()
+      // 编辑
+      if (this.id !== null) {
+        await update(this.id, this.CarDetailsData)
+        this.$emit('update-list')
+        this.$message.success('编辑成功')
+      } else {
+        // 新增
+        const res = await add(this.CarDetailsData)
+        if (res.code === 1) {
+          this.$message.success('新增失败')
+        } else {
+          this.$message.success('新增成功')
+          this.$emit('update-list')
+        }
       }
-      await add(this.cardata)
-      this.$message.success('添加成功')
-      this.handleClose()
-      this.$emit('refesg')// 向父组件发送请求刷新数据
+      this.onClose()
     }
-
   }
 }
-
 </script>
+<style scoped>
+.righttext{
+margin-right: 14px;
+color: black;
+}
+</style>
