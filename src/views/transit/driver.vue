@@ -8,6 +8,7 @@
       >
         <el-col :span="8">
           <el-form-item
+            label-align="center"
             prop="account"
             label="司机账号:"
           >
@@ -19,6 +20,7 @@
             ></el-input>
           </el-form-item>
           <el-form-item
+            label-align="center"
             prop="agendId"
             label="所属机构:"
           >
@@ -38,6 +40,7 @@
             8"
         >
           <el-form-item
+            label-align="center"
             prop="name"
             label="司机姓名:"
           >
@@ -50,11 +53,12 @@
           </el-form-item>
           <div>
             <el-button
-              type="primary"
+              type="warning"
               size="medium"
               @click="handleSearch"
             >搜索</el-button>
             <el-button
+              style="width:100px;height:40px"
               size="medium"
               @click="handleReset"
             >重置</el-button>
@@ -62,6 +66,7 @@
         </el-col>
         <el-col :span="8">
           <el-form-item
+            label-align="center"
             prop="mobile"
             label="司机手机号:"
           >
@@ -171,15 +176,16 @@
         </div>
         <el-form :model="userinfo">
           <el-form-item
+            label-align="center"
             label="配置车辆:"
-            prop="trucks.licensePlate"
+            prop="licensePlate"
           >
             <el-select
               v-model="value"
               placeholder="请选择车辆"
             >
               <el-option
-                v-for="item in trucks.trucks"
+                v-for="item in trucks"
                 :key="item.id"
                 :label="item.licensePlate"
                 :value="item.id"
@@ -187,23 +193,47 @@
             </el-select>
           </el-form-item>
         </el-form>
-        <el-table :data="trucks.trucks">
+        <el-table :data="driverTruck">
           <el-table-column
+            label-align="center"
+            prop="licensePlate"
             label="车牌号"
-          ></el-table-column>
+          >
+            <template v-slot="scope">
+              <span>{{ scope.row.licensePlate }}</span>
+            </template>
+          </el-table-column>
           <el-table-column
+            label-align="center"
+            prop="status"
             label="车辆状态"
           >
+            <template v-slot="scope">
+              <span
+                v-if="scope.row.status===1"
+                id="greenPoints"
+              >{{ '可用' }}</span>
+              <span
+                v-else-if="scope.row.status===0"
+                id="redPoints"
+              >{{ '禁用' }}</span>
+            </template>
           </el-table-column>
-          <el-table-column label="操作">
+          <el-table-column
+            label="操作"
+            label-align="center"
+          >
             <el-button
               type="text"
               size="small"
+              @click="handleLook"
             >查看</el-button>
             <p id="noting"></p>
             <el-button
-              type="primary"
+              type="text"
+              style="cplor:red"
               size="small"
+              @click="handleDel"
             >删除</el-button>
           </el-table-column>
         </el-table>
@@ -212,8 +242,11 @@
           align="center"
           justify="center"
         >
-          <el-button type="primary">确认</el-button>
-          <el-button>取消</el-button>
+          <el-button type="warning">确认</el-button>
+          <el-button
+            style="width:100px;height:40px"
+            @click="handleQUXIAO"
+          >取消</el-button>
         </el-row>
       </el-dialog>
     </div>
@@ -245,7 +278,7 @@ export default {
       counts: null, // 总条数
       userid: null, // 点击查看和车辆配置的用户id
       dialogTableVisible: false,
-      trucks: {}, // 车辆对象
+      trucks: [], // 车辆对象
       value: '',
       userinfo: {}, // 车辆管理司机信息
       selectData: [], // 下拉框数据
@@ -253,7 +286,8 @@ export default {
         id: 'id',
         label: 'name',
         children: 'children'
-      }
+      },
+      driverTruck: []
     }
   },
   created() {
@@ -268,10 +302,9 @@ export default {
       const res = await getDrivers({ page: this.page, pageSize: this.pageSize })
       this.drivers = res.data.items
       this.counts = res.data.counts
-      // 获取车辆信息
+      // 获取所有车辆信息
       const res1 = await getTrucks()
-      this.trucks.trucks = res1.data
-      console.log(this.trucks)
+      this.trucks = res1.data
     },
     async initTree() {
       const res = await getTreeData()
@@ -307,23 +340,31 @@ export default {
         }
       )
         .then(() => {
-          this.findTargetUser()
           this.dialogTableVisible = true
+          this.findTargetUser()
         })
-        .catch(() => {
-          this.$message({
-            type: 'info',
-            message: '已取消'
-          })
-        })
+        // .catch(() => {
+        //   this.$message({
+        //     type: 'info',
+        //     message: '已取消'
+        //   })
+        // })
     },
-    // 获取单个司机详情
+    // 通过userid筛选获取单个司机详情
     findTargetUser() {
       const targetUser = this.drivers.find(
         (item) => item.userId === this.userid
       )
+      // 点击的司机的信息
       this.userinfo = targetUser
+      // 有的司机this.userinfo.truck=null不知道怎么解决
       this.value = this.userinfo.truck.licensePlate
+
+      // dialog表格司机车辆信息
+      console.log('所有车辆', this.trucks)
+      this.driverTruck = this.trucks.filter(truck => {
+        return truck.licensePlate === this.value
+      })
     },
     // 搜索按钮
     async handleSearch() {
@@ -337,7 +378,6 @@ export default {
       }
       console.log('请求参数', parmas)
       const res = await getDrivers(parmas)
-      console.log(res)
       this.drivers = res.data.items
     },
     // 取消搜索，重置表单
@@ -356,17 +396,27 @@ export default {
         label: node.name,
         children: node.children
       }
+    },
+    handleLook() {
+      this.$router.push({ name: 'vehicle-detail' })
+    },
+    handleDel() {
+      this.driverTruck = []
+    },
+    handleQUXIAO() {
+      this.dialogTableVisible = false
+      this.driverTruck = []
     }
   }
 }
 </script>
 
-<style lang="scss" >
+<style lang="scss" scoped >
 .driver {
   padding: 20px;
-  label {
-    font-weight: normal;
-  }
+   /deep/ .el-form-item__label {
+      font-weight: normal;
+    }
   #pagination {
     padding: 20px;
     text-align: center;
@@ -396,6 +446,7 @@ export default {
     #noting {
       display: inline-block;
       width: 1px;
+      line-height: 1em;
       height: 1em;
       margin: 0 8px;
       background-color: #66b7ff;
@@ -413,6 +464,9 @@ export default {
           line-height: 40px;
         }
       }
+    }
+   /deep/ .el-table tr td:last-child .cell {
+      text-align: left;
     }
   }
 }

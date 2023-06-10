@@ -112,7 +112,7 @@
                   <el-col :span="8">
                     <el-form-item label="驾驶证号:">
                       <el-input
-                        v-model="driverCardInfo.licenseNumber "
+                        v-model="driverCardInfo.licenseNumber"
                         inline="true"
                         disabled
                         style="width: 203px"
@@ -182,24 +182,24 @@
                   </el-col>
                 </el-row>
                 <el-row>
-                  <el-col :span="8"> <el-form-item label="从业资格证:">
-                    <el-input
-                      v-model="driverCardInfo.qualificationCertificate"
-                      inline="true"
-                      disabled
-                      style="width: 203px"
-                      type="search"
-                    ></el-input>
-                  </el-form-item></el-col>
-                  <el-col :span="8"> <el-form-item label="入场证信息:">
-                    <el-input
-                      v-model="driverCardInfo.passCertificate"
-                      inline="true"
-                      disabled
-                      style="width: 203px"
-                      type="search"
-                    ></el-input>
-                  </el-form-item></el-col>
+                  <el-col :span="8">
+                    <el-form-item label="从业资格证:">
+                      <el-input
+                        v-model="driverCardInfo.qualificationCertificate"
+                        inline="true"
+                        disabled
+                        style="width: 203px"
+                        type="search"
+                      ></el-input> </el-form-item></el-col>
+                  <el-col :span="8">
+                    <el-form-item label="入场证信息:">
+                      <el-input
+                        v-model="driverCardInfo.passCertificate"
+                        inline="true"
+                        disabled
+                        style="width: 203px"
+                        type="search"
+                      ></el-input> </el-form-item></el-col>
                   <el-col :span="8"></el-col>
                 </el-row>
                 <el-row>
@@ -291,6 +291,7 @@
                       :src="picture"
                       shape="square"
                       :size="100"
+                      style="cursor: zoom-in"
                     ></el-avatar>
                   </div>
                 </el-col>
@@ -340,7 +341,6 @@
                     <el-input
                       v-model="driverCardInfo.allowableType"
                       inline="true"
-
                       style="width: 203px"
                       type="search"
                     ></el-input>
@@ -354,7 +354,6 @@
                     <el-input
                       v-model="driverCardInfo.initialCertificateDate"
                       inline="true"
-
                       style="width: 203px"
                       type="search"
                     ></el-input>
@@ -367,7 +366,6 @@
                     <el-input
                       v-model="driverCardInfo.validPeriod"
                       inline="true"
-
                       style="width: 203px"
                       type="search"
                     ></el-input>
@@ -378,7 +376,6 @@
                     <el-input
                       v-model="driverCardInfo.driverAge"
                       inline="true"
-
                       style="width: 203px"
                       type="search"
                     ></el-input>
@@ -389,7 +386,6 @@
                     <el-input
                       v-model="driverCardInfo.licenseType"
                       inline="true"
-
                       style="width: 203px"
                       type="search"
                     ></el-input>
@@ -397,22 +393,22 @@
                 </el-col>
               </el-row>
               <el-row>
-                <el-col :span="8"> <el-form-item label="从业资格证:">
-                  <el-input
-                    v-model="driverCardInfo.qualificationCertificate"
-                    inline="true"
-                    style="width: 203px"
-                    type="search"
-                  ></el-input>
-                </el-form-item></el-col>
-                <el-col :span="8"> <el-form-item label="入场证信息:">
-                  <el-input
-                    v-model="driverCardInfo.passCertificate"
-                    inline="true"
-                    style="width: 203px"
-                    type="search"
-                  ></el-input>
-                </el-form-item></el-col>
+                <el-col :span="8">
+                  <el-form-item label="从业资格证:">
+                    <el-input
+                      v-model="driverCardInfo.qualificationCertificate"
+                      inline="true"
+                      style="width: 203px"
+                      type="search"
+                    ></el-input> </el-form-item></el-col>
+                <el-col :span="8">
+                  <el-form-item label="入场证信息:">
+                    <el-input
+                      v-model="driverCardInfo.passCertificate"
+                      inline="true"
+                      style="width: 203px"
+                      type="search"
+                    ></el-input> </el-form-item></el-col>
                 <el-col :span="8"></el-col>
               </el-row>
               <el-row>
@@ -422,6 +418,7 @@
                     fit="fill"
                     :src="picture"
                     shape="square"
+                    style="cursor: zoom-in"
                     :size="100"
                   ></el-avatar>
                 </div>
@@ -484,7 +481,7 @@ export default {
       this.isShow = true
     },
     // 保存司机信息修改
-    async  handleSave() {
+    async handleSave() {
       await saveDriver(this.userid, this.userInfo)
       this.$message.success('保存成功')
       this.isShow = !this.isShow
@@ -505,12 +502,13 @@ export default {
     /deep/ .el-form-item__label {
       font-weight: normal;
     }
-     #editAvatar,#prevAvatar{
-       text-align: left;
-       span{
+    #editAvatar,
+    #prevAvatar {
+      text-align: left;
+      span {
         vertical-align: top;
-       }
       }
+    }
   }
 }
 
@@ -534,12 +532,18 @@ export default {
     /deep/ .el-form-item__label {
       font-weight: normal;
     }
-    #editAvatar,#prevAvatar{
-       text-align: left;
-        span{
+    .el-button:focus,
+    .el-button:hover {
+      color: #ffffff;
+      background-color: #e15536;
+    }
+    #editAvatar,
+    #prevAvatar {
+      text-align: left;
+      span {
         vertical-align: top;
-       }
       }
+    }
   }
 }
 .style2 .active {
