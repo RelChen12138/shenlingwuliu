@@ -55,7 +55,7 @@
         </el-form-item>
       </el-form>
     </div>
-    <!-- 车辆数量 -->
+    <!-- 车辆列表 -->
     <div class="car-number">
       <span
         :class="{active:activetype==='all'}"
@@ -458,9 +458,7 @@ export default {
       this.obj.pageSize = 10
       if (type === 'all') {
         this.obj.workStatus = null
-        const { data } = await truckList(this.obj)
-        this.carList = data.items
-        this.activetotal = +data.counts
+        this.init()
       } else if (type === 'can-use') {
         this.obj.workStatus = 1
         this.initTwo()
