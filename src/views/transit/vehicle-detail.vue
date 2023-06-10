@@ -3,7 +3,7 @@
   <div
     class="dashboard-container vehicle-detail"
   >
-    撒酒疯的
+
   </div>
 </template>
 <script>
