@@ -118,18 +118,13 @@
   </div>
 </template>
 <script>
-import { add, update } from '@/api/transit'
-import { getcarlist } from '@/api/carID'
+import { add } from '@/api/transit'
 export default {
   name: 'CarModelsAdd',
   props: {
     showaddcar: {
       type: Boolean,
       default: false
-    },
-    carid: {
-      type: String,
-      default: ''
     }
   },
   data() {
@@ -148,50 +143,27 @@ export default {
         name: [{ required: true, message: '车辆类型不能为空', trigger: ['blur', 'change'] }],
         allowableVolume: [{ required: true, message: '车辆体积不能为空', trigger: ['blur', 'change'] }],
         allowableLoad: [{ required: true, message: '车辆载重不能为空', trigger: ['blur', 'change'] }]
-      },
-      isEdit: false
+      }
     }
-  },
-  created() {
-    // this.getcar()
-    // console.log(this.carid)
   },
   methods: {
     // 弹层显示
-    looksysloading(isEdit = false, id) {
-      this.isEdit = isEdit
+    looksysloading() {
       this.sysloading = true
-      if (this.isEdit) {
-        this.getcar(id)
-      }
     },
     // 弹框关闭
     handleClose() {
       this.sysloading = false
       this.$refs.addfrom.resetFields()
     },
-    // 获取车辆详情
-    async getcar(id) {
-      console.log(id)
-      const { data } = await getcarlist(id)
-      this.cardata = data
-    },
     // 新增点击确认按钮
     async affaddcar() {
-      if (this.isEdit) {
-        // 修改
-        await update(this.carid, this.cardata)
-        this.$message.success('修改成功')
-        this.handleClose()
-        this.$emit('refesg')
-        return
-      }
       await add(this.cardata)
       this.$message.success('添加成功')
       this.handleClose()
       this.$emit('refesg')// 向父组件发送请求刷新数据
     }
-
+    // 编辑点击按钮
   }
 }
 

@@ -14,13 +14,13 @@
         <el-form-item
           prop="truckTypeId"
           label="车辆类型"
-          style="width: 30%;"
+          style="width: 35%;"
         >
           <el-select
             v-model="obj.truckTypeId"
             clearable
             placeholder="请选择"
-            style="width: 400px;"
+            style="width: 380px;"
           >
             <el-option
               v-for="item in carTypeList"
@@ -33,11 +33,11 @@
         <el-form-item
           prop="licensePlate"
           label="车牌号码"
-          style="width: 30%;"
+          style="width: 35%;"
         >
           <el-input
             v-model="obj.licensePlate"
-            style="width: 400px;"
+            style="width: 380px;"
             placeholder="请输入车牌号码"
           ></el-input>
 
@@ -55,7 +55,7 @@
         </el-form-item>
       </el-form>
     </div>
-    <!-- 车辆数量 -->
+    <!-- 车辆列表 -->
     <div class="car-number">
       <span
         :class="{active:activetype==='all'}"
@@ -88,7 +88,7 @@
           <el-table-column
             type="index"
             label="序号"
-            width="50"
+            width="60"
           >
           </el-table-column>
 
@@ -154,6 +154,7 @@
               <el-button
                 type="text"
                 :class="{activeColorfont:row.workStatus === 1}"
+                @click="openQy(row.id)"
               >{{ row.workStatus| filterStatusT }}</el-button>
               <el-button
                 type="text"
@@ -163,7 +164,7 @@
           </el-table-column>
         </el-table>
       </div>
-      <!-- 第一个弹框确认框 -->
+      <!-- 配置司机确认弹框 -->
       <el-dialog
         title="车辆配置"
         :visible.sync="isShowone"
@@ -277,8 +278,11 @@
                 prop=""
                 label="操作"
               >
-                <template>
-                  <el-button type="text">查看</el-button><span class="lineBetween">|</span>
+                <template v-slot="{row}">
+                  <el-button
+                    type="text"
+                    @click="chakanDriver(row)"
+                  >查看</el-button><span class="lineBetween">|</span>
                   <el-button
                     type="text"
                     style="color:red"
@@ -305,6 +309,33 @@
             @click="closeDriverpage"
           >取 消</el-button>
         </el-row>
+      </el-dialog>
+      <!-- 启用确认弹框 -->
+      <el-dialog
+        title="车辆启用"
+        :visible.sync="isShowThree"
+        width="25%"
+      >
+        <div class="messagetitle">确定要启用吗?车辆启用需满足以下条件:</div>
+        <div class="messagediv">
+          <span>1 车辆信息已完善</span>
+          <span>2 绑定司机>=2,且有排班</span>
+        </div>
+        <span
+          slot="footer"
+          class="dialog-footer"
+        >
+          <el-button
+            size="mini"
+            @click="isShowThree = false"
+          >取 消</el-button>
+          <el-button
+            size="mini"
+            style="width:60px;height:30px"
+            type="warning"
+            @click="handleQyClose"
+          >确 定</el-button>
+        </span>
       </el-dialog>
       <!-- 分页器 -->
       <div class="hanggao">
@@ -357,6 +388,7 @@ export default {
       driverList: [],
       isShowone: false,
       isShowTwo: false,
+      isShowThree: false,
       carTypeList: [],
       usenumber: 0,
       stopnumber: 0,
@@ -426,9 +458,7 @@ export default {
       this.obj.pageSize = 10
       if (type === 'all') {
         this.obj.workStatus = null
-        const { data } = await truckList(this.obj)
-        this.carList = data.items
-        this.activetotal = +data.counts
+        this.init()
       } else if (type === 'can-use') {
         this.obj.workStatus = 1
         this.initTwo()
@@ -474,13 +504,12 @@ export default {
       console.log(row)
       this.$router.push(`vehicle-detail/?id=${row.id}`)
     },
-    // 配置司机
+    // 配置司机 用一个变量保存点击对象
     openDriver(row) {
-      console.log(row)
       this.rowObj = row
-      console.log(this.rowObj)
       this.isShowone = true
     },
+    // 配置司机弹框 拿绑定司机列表
     async handleMessageClose () {
       this.isShowone = false
       const res = await getDriverListByCar(this.rowObj.id)
@@ -488,9 +517,22 @@ export default {
       this.driverListTwo = res.data.map(item => item.name)
       this.isShowTwo = true
     },
+    // 关闭弹框 初始化对象
     closeDriverpage() {
       this.rowObj = {}
       this.isShowTwo = false
+    },
+    // 点击跳转司机详情页
+    chakanDriver(row) {
+      this.$router.push(`driver-detail?id=${row.userId}`)
+    },
+    // 启用确认弹框
+    openQy() {
+      this.isShowThree = true
+    },
+    // 启用关闭弹框
+    handleQyClose() {
+      this.isShowThree = false
     }
   }
 
