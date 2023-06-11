@@ -37,7 +37,7 @@ export function parseTime(time, cFormat) {
   const time_str = format.replace(/{([ymdhisa])+}/g, (result, key) => {
     const value = formatObj[key]
     // Note: getDay() returns 0 on Sunday
-    if (key === 'a') { return ['日', '一', '二', '三', '四', '五', '六'][value ] }
+    if (key === 'a') { return ['日', '一', '二', '三', '四', '五', '六'][value] }
     return value.toString().padStart(2, '0')
   })
   return time_str
@@ -97,12 +97,12 @@ export function param2Obj(url) {
   }
   return JSON.parse(
     '{"' +
-      decodeURIComponent(search)
-        .replace(/"/g, '\\"')
-        .replace(/&/g, '","')
-        .replace(/=/g, '":"')
-        .replace(/\+/g, ' ') +
-      '"}'
+    decodeURIComponent(search)
+      .replace(/"/g, '\\"')
+      .replace(/&/g, '","')
+      .replace(/=/g, '":"')
+      .replace(/\+/g, ' ') +
+    '"}'
   )
 }
 
@@ -113,7 +113,7 @@ export function randomNum(len, radix) {
 
   if (len) {
     // Compact form
-    for (let i = 0; i < len; i++) uuid[i] = chars[0 | Math.random() * radix ]
+    for (let i = 0; i < len; i++) uuid[i] = chars[0 | Math.random() * radix]
   } else {
     // rfc4122, version 4 form
     let r
@@ -135,7 +135,7 @@ export function randomNum(len, radix) {
 }
 
 // 时间戳转时间  年/月/日 时:分:秒
-export function getHMS (timestamp) {
+export function getHMS(timestamp) {
   var date = new Date(timestamp) // 时间戳为10位需*1000，时间戳为13位的话不需乘1000
   var Y = date.getFullYear() + '-'
   var M = (date.getMonth() + 1 < 10 ? '0' + (date.getMonth() + 1) : date.getMonth() + 1) + '-'
@@ -191,10 +191,10 @@ export function handleDate(val) {
   const min = Number(
     (
       ((val / 60).toFixed(2) - parseInt((val / 60).toFixed(2))) *
-        60
+      60
     ).toFixed() === '0' ? '00' : (
         ((val / 60).toFixed(2) - parseInt((val / 60).toFixed(2))) *
-        60
+      60
       ).toFixed()
   )
   return (
@@ -205,6 +205,24 @@ export function handleDate(val) {
     )
   )
 }
+<<<<<<< HEAD
+
+/**
+ *
+ * 列表型数据转化树形
+*/
+
+// export function transListToTreeData(data, pid = 0) {
+//   const arr = []
+//   data.forEach(item => {
+//     if (item.pid === pid) {
+//       // 找到了匹配的节点
+//       // 当前节点的id 和 当前节点的子节点的pid是想等的
+//       const children = transListToTreeData(data, item.id) // 找到的节点的子节点
+//       if (children.length) { // 如果children不为空，则将当前节点加入到子节点的列表中，并将子节点转换为树形结 0是false
+//         item.children = children // 将子节点赋值给当前节点
+//       }
+//       arr.push(item)
 
 // 数组转化成树形结构
 export function listToTree(list, rootVal) {
@@ -221,3 +239,5 @@ export function listToTree(list, rootVal) {
   return arr
 }
 
+=======
+>>>>>>> 5f3ceda92b772091b3aba6b6821b2ca3aef20d5d

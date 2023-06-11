@@ -468,7 +468,7 @@ export default {
   padding: 20px;
 }
 .box-card{
-  width: 1287px;
+  width: 100%;
   height: 175px;
 }
 /deep/ .el-button--medium {

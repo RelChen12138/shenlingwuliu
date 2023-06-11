@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    切换表单和类型：
+复制
+<el-tabs
+  v-model="activeName"
+  class="tab-box"
+  :before-leave="beforeLeave"
+>
+<el-tab-pane
+  v-if="!workPatternsForm.id || activeName==='1'"
+  label="礼拜制"
+  name="1"
+>
+<!-- 礼拜制表单内容 -->
+</el-tab-pane>
+<el-tab-pane
+  v-if="!workPatternsForm.id || activeName==='2'"
+  label="连续制"
+  name="2"
+>
+<!-- 连续制表单内容 -->
+</el-tab-pane>
+</el-tabs>
+
+...
+
+// 切换tab时重置表单
+beforeLeave(val) {
+  this.workPatternsForm.workPatternType = val
+  this.workDayNum = 0
+  this.restDayNum = 0
+  if (this.workPatternsForm.workPatternType === '2') {
+    // 连续制表单的初始化
+  }
+  this.value1 = [new Date(2016, 9, 10, 9, 0), new Date(2016, 9, 10, 18, 0)]
+},
+</body>
+</html>

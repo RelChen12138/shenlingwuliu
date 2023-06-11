@@ -46,7 +46,7 @@
             <label>地区关键词：</label>
             <el-input
               v-model="keyword"
-              placeholder="请输入地区关键词"
+              placeholder="请输入键词"
               @input="handleInputfun"
             />
           </div>

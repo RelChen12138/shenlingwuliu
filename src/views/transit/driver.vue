@@ -373,7 +373,7 @@ export default {
         pageSize: this.pageSize,
         name: this.driverInfo.name,
         phone: this.driverInfo.mobile,
-        agendId: this.driverInfo.agendId,
+        agentId: this.driverInfo.agendId,
         account: this.driverInfo.account
       }
       console.log('请求参数', parmas)
