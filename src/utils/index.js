@@ -205,6 +205,7 @@ export function handleDate(val) {
     )
   )
 }
+<<<<<<< HEAD
 /**
  *
  * 列表型数据转化树形
@@ -221,8 +222,24 @@ export function transListToTreeData(data, pid = 0) {
         item.children = children // 将子节点赋值给当前节点
       }
       arr.push(item)
+=======
+
+// 数组转化成树形结构
+export function listToTree(list, rootVal) {
+  const arr = []
+  list.forEach(element => {
+    if (element.parentId === rootVal) {
+      arr.push(element)
+    }
+    const children = listToTree(list, element.id)
+    if (children.length) {
+      element.children = children
+>>>>>>> 8f8ae617f6952b60aed1b99d4103fdc19c9b3bd0
     }
   })
   return arr
 }
+<<<<<<< HEAD
 
+=======
+>>>>>>> 8f8ae617f6952b60aed1b99d4103fdc19c9b3bd0
