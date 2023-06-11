@@ -8,11 +8,6 @@ const service = axios.create({
   baseURL: process.env.VUE_APP_BASE_URL,
   timeout: 5000 // request timeout
 })
-<<<<<<< HEAD
-
-=======
-// console.log(process.env.NODE_ENV, '环境')
->>>>>>> dev
 service.interceptors.request.use(
   config => {
     // 线上环境不允许进行数据库方面的增删改查的修改
