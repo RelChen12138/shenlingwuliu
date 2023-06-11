@@ -205,7 +205,6 @@ export function handleDate(val) {
     )
   )
 }
-<<<<<<< HEAD
 
 /**
  *
@@ -239,5 +238,3 @@ export function listToTree(list, rootVal) {
   return arr
 }
 
-=======
->>>>>>> 5f3ceda92b772091b3aba6b6821b2ca3aef20d5d

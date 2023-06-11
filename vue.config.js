@@ -121,6 +121,14 @@ module.exports = {
       alias: {
         '@': resolve('src')
       }
+    },
+    // 配置需要排出的包
+    externals: {
+      'vue': 'Vue',
+      'element-ui': 'ELEMENT',
+      'vue-router': 'VueRouter',
+      'jquery': 'jQuery',
+      'vue-baidu-map': 'VueBaiduMap'
     }
   },
   chainWebpack(config) {
