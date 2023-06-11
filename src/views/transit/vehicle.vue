@@ -55,7 +55,7 @@
         </el-form-item>
       </el-form>
     </div>
-    <!-- 车辆数量 -->
+    <!-- 车辆列表 -->
     <div class="car-number">
       <span
         :class="{active:activetype==='all'}"
@@ -404,7 +404,7 @@ export default {
       },
       activetype: 'all',
       rules: {
-        licensePlate: [{ min: 7, max: 7, message: '请输入正确的车牌号', trigger: 'blur' }],
+        licensePlate: [{ }],
         truckTypeId: [{ }]
       },
       isOpen: false,
@@ -458,9 +458,7 @@ export default {
       this.obj.pageSize = 10
       if (type === 'all') {
         this.obj.workStatus = null
-        const { data } = await truckList(this.obj)
-        this.carList = data.items
-        this.activetotal = +data.counts
+        this.init()
       } else if (type === 'can-use') {
         this.obj.workStatus = 1
         this.initTwo()
@@ -496,6 +494,9 @@ export default {
     // 重置表单
     clearform () {
       this.$refs.resetform.resetFields()
+      this.obj.page = 1
+      this.obj.pageSize = 10
+      this.init()
     },
     // 新增车辆
     addCar () {
