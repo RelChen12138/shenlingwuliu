@@ -14,13 +14,13 @@
         <el-form-item
           prop="truckTypeId"
           label="车辆类型"
-          style="width: 30%;"
+          style="width: 35%;"
         >
           <el-select
             v-model="obj.truckTypeId"
             clearable
             placeholder="请选择"
-            style="width: 400px;"
+            style="width: 380px;"
           >
             <el-option
               v-for="item in carTypeList"
@@ -33,11 +33,11 @@
         <el-form-item
           prop="licensePlate"
           label="车牌号码"
-          style="width: 30%;"
+          style="width: 35%;"
         >
           <el-input
             v-model="obj.licensePlate"
-            style="width: 400px;"
+            style="width: 380px;"
             placeholder="请输入车牌号码"
           ></el-input>
 
@@ -88,7 +88,7 @@
           <el-table-column
             type="index"
             label="序号"
-            width="50"
+            width="60"
           >
           </el-table-column>
 
@@ -154,12 +154,189 @@
               <el-button
                 type="text"
                 :class="{activeColorfont:row.workStatus === 1}"
+                @click="openQy(row.id)"
               >{{ row.workStatus| filterStatusT }}</el-button>
-              <el-button type="text">配置司机</el-button>
+              <el-button
+                type="text"
+                @click="openDriver(row)"
+              >配置司机</el-button>
             </template>
           </el-table-column>
         </el-table>
       </div>
+      <!-- 配置司机确认弹框 -->
+      <el-dialog
+        title="车辆配置"
+        :visible.sync="isShowone"
+        width="25%"
+      >
+        <div class="messagetitle">配置司机需要满足以下条件:</div>
+        <div class="messagediv">
+          <span>1 车辆信息已完善</span>
+          <span>2 车辆无未完成运输任务</span>
+        </div>
+        <span
+          slot="footer"
+          class="dialog-footer"
+        >
+          <el-button
+            size="mini"
+            @click="isShowone = false"
+          >取 消</el-button>
+          <el-button
+            size="mini"
+            style="width:60px;height:30px"
+            type="warning"
+            @click="handleMessageClose"
+          >确 定</el-button>
+        </span>
+      </el-dialog>
+      <!-- 配置司机弹框 -->
+      <el-dialog
+        title="配置司机"
+        :visible.sync="isShowTwo"
+        width="35%"
+        @close="closeDriverpage"
+      >
+        <div class="driverdiv">
+          <div class="header">
+            <el-form
+              label-position="left"
+              label-width="75px"
+            >
+              <div class="firstcolumn">
+                <el-form-item
+                  label="车牌号:"
+                  style="height:30px"
+                >
+                  <span>{{ rowObj.licensePlate }}</span>
+                </el-form-item>
+                <el-form-item
+                  label="车型:"
+                  style="height:30px;width:160px"
+                >
+                  <span>{{ rowObj.truckTypeName }}</span>
+                </el-form-item>
+              </div>
+              <div class="secondcolumn">
+                <el-form-item
+                  label="车辆状态:"
+                  style="height:30px;width:150px"
+                >
+                  <span class="greenBG">可用</span>
+                </el-form-item>
+                <el-form-item
+                  label="实载重量:"
+                  style="height:30px;width:150px"
+                >
+                  <span>{{ rowObj.allowableLoad }}</span>
+                </el-form-item>
+              </div>
+              <el-form-item
+                label="实载体积:"
+                style="height:30px;width:150px"
+              >
+                <span>{{ rowObj.allowableVolume }}</span>
+              </el-form-item>
+            </el-form>
+          </div>
+          <div class="drivermain">
+            <span>配置司机：</span>
+            <el-select
+              v-model="driverListTwo"
+              multiple
+              style="width: 300px;"
+            >
+              <el-option
+                v-for="item in driverList"
+                :key="item.id"
+                :value="item.name"
+                :label="item.name"
+              ></el-option>
+            </el-select>
+          </div>
+          <div class="driverfooter">
+            <el-table
+              :data="driverList"
+              stripe
+              style="width: 100%;height:200px"
+            >
+              <el-table-column
+                prop="date"
+                type="index"
+                label="序号"
+                width="180"
+              >
+              </el-table-column>
+              <el-table-column
+                prop="name"
+                label="司机名称"
+                width="180"
+              >
+              </el-table-column>
+              <el-table-column
+                prop=""
+                label="操作"
+              >
+                <template v-slot="{row}">
+                  <el-button
+                    type="text"
+                    @click="chakanDriver(row)"
+                  >查看</el-button><span class="lineBetween">|</span>
+                  <el-button
+                    type="text"
+                    style="color:red"
+                  >删除</el-button>
+                </template>
+              </el-table-column>
+            </el-table>
+          </div>
+        </div>
+        <el-row
+          slot="footer"
+          type="flex"
+          justify="center"
+          class="dialog-footer"
+        >
+          <el-button
+            style="width:70px"
+            size="small"
+            type="warning"
+            @click="closeDriverpage"
+          >确 定</el-button>
+          <el-button
+            size="small"
+            @click="closeDriverpage"
+          >取 消</el-button>
+        </el-row>
+      </el-dialog>
+      <!-- 启用确认弹框 -->
+      <el-dialog
+        title="车辆启用"
+        :visible.sync="isShowThree"
+        width="25%"
+      >
+        <div class="messagetitle">确定要启用吗?车辆启用需满足以下条件:</div>
+        <div class="messagediv">
+          <span>1 车辆信息已完善</span>
+          <span>2 绑定司机>=2,且有排班</span>
+        </div>
+        <span
+          slot="footer"
+          class="dialog-footer"
+        >
+          <el-button
+            size="mini"
+            @click="isShowThree = false"
+          >取 消</el-button>
+          <el-button
+            size="mini"
+            style="width:60px;height:30px"
+            type="warning"
+            @click="handleQyClose"
+          >确 定</el-button>
+        </span>
+      </el-dialog>
       <!-- 分页器 -->
       <div class="hanggao">
         <el-row
@@ -189,7 +366,7 @@
 </template>
 <script>
 import VehicleAdd from '@/views/transit/components/vehicle-add.vue'
-import { truckList, getCarTypeList } from '@/api/transit'
+import { truckList, getCarTypeList, getDriverListByCar } from '@/api/transit'
 import { getBadorGoodcarList } from '@/api/vehicleManagement.js'
 export default {
   name: 'Vehicle',
@@ -206,6 +383,12 @@ export default {
   },
   data () {
     return {
+      rowObj: {},
+      driverListTwo: [],
+      driverList: [],
+      isShowone: false,
+      isShowTwo: false,
+      isShowThree: false,
       carTypeList: [],
       usenumber: 0,
       stopnumber: 0,
@@ -224,7 +407,8 @@ export default {
         licensePlate: [{ min: 7, max: 7, message: '请输入正确的车牌号', trigger: 'blur' }],
         truckTypeId: [{ }]
       },
-      isOpen: false
+      isOpen: false,
+      id: ''
     }
   },
   async created() {
@@ -317,9 +501,40 @@ export default {
     addCar () {
       this.$refs.addDialog.getOpen()
     },
+    // 查看详情
     openDetail(row) {
       console.log(row)
       this.$router.push(`vehicle-detail/?id=${row.id}`)
+    },
+    // 配置司机 用一个变量保存点击对象
+    openDriver(row) {
+      this.rowObj = row
+      this.isShowone = true
+    },
+    // 配置司机弹框 拿绑定司机列表
+    async handleMessageClose () {
+      this.isShowone = false
+      const res = await getDriverListByCar(this.rowObj.id)
+      this.driverList = res.data
+      this.driverListTwo = res.data.map(item => item.name)
+      this.isShowTwo = true
+    },
+    // 关闭弹框 初始化对象
+    closeDriverpage() {
+      this.rowObj = {}
+      this.isShowTwo = false
+    },
+    // 点击跳转司机详情页
+    chakanDriver(row) {
+      this.$router.push(`driver-detail?id=${row.userId}`)
+    },
+    // 启用确认弹框
+    openQy() {
+      this.isShowThree = true
+    },
+    // 启用关闭弹框
+    handleQyClose() {
+      this.isShowThree = false
     }
   }
 
@@ -469,5 +684,60 @@ export default {
 
   .el-table .success-row {
     background: #f0f9eb;
+  }
+  .messagetitle{
+    display: flex;
+    height: 30px;
+    line-height: 30px;
+    font-size: 14px;
+    color: black;
+  }
+  .messagediv {
+    display: flex;
+    justify-content: space-between;
+    height: 30px;
+    line-height: 30px;
+    font-size: 14px;
+    color: black;
+    margin-bottom: 20px;
+  }
+  .driverdiv{
+    width: 100%;
+    padding:10px 20px;
+    background-color: #fff;
+    .header {
+      width: 100%;
+      height: 120px;
+      background-color: #fbfafa;
+      padding:10px 40px;
+      margin-bottom: 10px;
+      .greenBG{
+        display: inline-block;
+        width: 40px;
+        height: 20px;
+        background-color: #37c608;
+        border-radius: 10px;
+        line-height: 20px;
+        color: white;
+      }
+      .firstcolumn,
+      .secondcolumn{
+        display: flex;
+        justify-content: space-between;
+        height: 30px;
+      }
+    }
+    .drivermain {
+      width: 100%;
+      display: flex;
+      align-items: center;
+    }
+    .driverfooter{
+      margin-top: 10px;
+      .lineBetween{
+        margin: 0 10px;
+        color: #ccc;
+      }
+    }
   }
 </style>
