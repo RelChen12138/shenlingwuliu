@@ -102,8 +102,8 @@
   </el-dialog>
 </template>
 <script>
-import { add, update } from '@/api/transit'
-import { getcarlist } from '@/api/carID'
+import { add, detail, update } from '@/api/transit'
+
 export default {
   name: 'CarModelsAdd',
   props: {
@@ -167,50 +167,78 @@ export default {
         measureWidth: '0.0',
         measureHigh: '0.0'
       },
-      rules: {
-        name: [{ required: true, message: '车辆类型不能为空', trigger: ['blur', 'change'] }],
-        allowableVolume: [{ required: true, message: '车辆体积不能为空', trigger: ['blur', 'change'] }],
-        allowableLoad: [{ required: true, message: '车辆载重不能为空', trigger: ['blur', 'change'] }]
-      },
-      isEdit: false
+      id: null,
+      // 表单校验规则
+      Carrules: {
+        name: [
+          { required: true, message: '车型名称不能为空', trigger: 'blur' }
+        ],
+        allowableLoad: [
+          { required: true, message: '应载重量不能为空', trigger: 'blur' },
+          { validator: Numonehundred, trigger: 'blur' }
+
+        ],
+        allowableVolume: [
+          { required: true, message: '应载体积不能为空', trigger: 'blur' },
+          { validator: Numonehundred, trigger: 'blur' }
+        ],
+        measureLong: [
+          { validator: LongMax, trigger: 'blur' },
+          { validator: perseFloatNum, trigger: 'blur' }
+        ],
+        measureWidth: [
+          { validator: WidthMax, trigger: 'blur' },
+          { validator: perseFloatNum, trigger: 'blur' }
+        ],
+        measureHigh: [
+          { validator: HightMax, trigger: 'blur' },
+          { validator: perseFloatNum, trigger: 'blur' }
+
+        ]
+      }
     }
   },
   methods: {
-    // 弹层显示
-    looksysloading(isEdit = false, id) {
-      this.isEdit = isEdit
-      this.sysloading = true
-      if (this.isEdit) {
-        this.getcar(id)
+    // 弹窗关闭
+    onClose() {
+      this.$emit('update:showDialog', false)
+      this.$refs.ruleForm.resetFields()
+      this.id = null
+      this.CarDetailsData = {
+        name: '',
+        allowableLoad: '',
+        allowableVolume: '',
+        measureLong: '0.0',
+        measureWidth: '0.0',
+        measureHigh: '0.0'
       }
-    },
-    // 弹框关闭
-    handleClose() {
-      this.sysloading = false
-      this.$refs.addfrom.resetFields()
     },
     // 获取车辆详情
-    async getcar(id) {
-      console.log(id)
-      const { data } = await getcarlist(id)
-      this.cardata = data
+    async gatCarDetails(id) {
+      this.id = id
+      const res = await detail(id)
+      this.CarDetailsData = res.data
+      // console.log(res.data)
     },
-    // 新增点击确认按钮
-    async affaddcar() {
-      if (this.isEdit) {
-        // 修改
-        await update(this.carid, this.cardata)
-        this.$message.success('修改成功')
-        this.handleClose()
-        this.$emit('refesg')
-        return
+    async submit() {
+      await this.$refs.ruleForm.validate()
+      // 编辑
+      if (this.id !== null) {
+        await update(this.id, this.CarDetailsData)
+        this.$emit('update-list')
+        this.$message.success('编辑成功')
+      } else {
+        // 新增
+        const res = await add(this.CarDetailsData)
+        if (res.code === 1) {
+          this.$message.success('新增失败')
+        } else {
+          this.$message.success('新增成功')
+          this.$emit('update-list')
+        }
       }
-      await add(this.cardata)
-      this.$message.success('添加成功')
-      this.handleClose()
-      this.$emit('refesg')// 向父组件发送请求刷新数据
+      this.onClose()
     }
-
   }
 }
 </script>
