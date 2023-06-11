@@ -168,7 +168,7 @@ export default {
     window.removeEventListener('message', this.handleMessage)
   },
   mounted() {
-    console.dir(this.$t, 'thissss')
+    // console.dir(this.$t, 'thissss')
     window.addEventListener('message', this.handleMessage)
   },
   methods: {

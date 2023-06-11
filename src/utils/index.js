@@ -205,3 +205,18 @@ export function handleDate(val) {
     )
   )
 }
+
+// 数组转化成树形结构
+export function listToTree(list, rootVal) {
+  const arr = []
+  list.forEach(element => {
+    if (element.parentId === rootVal) {
+      arr.push(element)
+    }
+    const children = listToTree(list, element.id)
+    if (children.length) {
+      element.children = children
+    }
+  })
+  return arr
+}
