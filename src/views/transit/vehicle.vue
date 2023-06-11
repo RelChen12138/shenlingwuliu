@@ -404,7 +404,7 @@ export default {
       },
       activetype: 'all',
       rules: {
-        licensePlate: [{ min: 7, max: 7, message: '请输入正确的车牌号', trigger: 'blur' }],
+        licensePlate: [{ }],
         truckTypeId: [{ }]
       },
       isOpen: false,
@@ -494,6 +494,9 @@ export default {
     // 重置表单
     clearform () {
       this.$refs.resetform.resetFields()
+      this.obj.page = 1
+      this.obj.pageSize = 10
+      this.init()
     },
     // 新增车辆
     addCar () {
