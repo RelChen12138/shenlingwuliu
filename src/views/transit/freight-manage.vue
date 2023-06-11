@@ -206,7 +206,7 @@
       :visible.sync="dialogVisible"
       width="30%"
     >
-      <div style="padding-left: 30px; font-size: 25px">
+      <div style="padding-left: 30px; font-size: 22px">
         删除后无法恢复，确认要删除吗？
       </div>
       <span
