@@ -3,11 +3,10 @@
   <div class="dashboard-container waybill-list customer-list-box">
     <div class="el-card__body">
       <el-button
-        type="primary"
+        type="warning"
         @click="handleAdd()"
       >新增模板</el-button>
       <el-table
-        border
         class="el-table"
         :data="list"
         style="width: 100%"
@@ -73,10 +72,11 @@
               type="text"
               @click="handleEdit(row)"
             >编辑</el-button>
-            <span>|</span>
+            <span> <el-divider direction="vertical"></el-divider></span>
             <el-button
               size="mini"
               type="text"
+              style="color:red"
               @click="handleDelete(row.id)"
             >删除</el-button>
           </template>
@@ -147,7 +147,7 @@
             >
               <el-checkbox
                 v-for="city in associatedCityList.filter(
-                  (item) => item.value !== 1
+                  (city) => city.value !== 1
                 )"
                 :key="city.value"
                 :label="city.value"
@@ -199,26 +199,27 @@
           <el-button @click="dialogFormVisible = false">取 消</el-button>
         </div>
       </el-dialog>
-      <!-- 删除弹框 -->
-      <el-dialog
-        title="确认删除"
-        :visible.sync="dialogVisible"
-        width="30%"
-      >
-        <span>确定要删除吗？</span>
-        <span
-          slot="footer"
-          class="dialog-footer"
-        >
-          <el-button @click="dialogVisible = false">取 消</el-button>
-          <el-button
-            type="primary"
-            @click="delfreight()"
-          >确 定</el-button>
-        </span>
-      </el-dialog>
     </div>
-    <div></div>
+    <!-- 删除弹框 -->
+    <el-dialog
+      title="确认删除"
+      :visible.sync="dialogVisible"
+      width="30%"
+    >
+      <div style="padding-left: 30px; font-size: 25px">
+        删除后无法恢复，确认要删除吗？
+      </div>
+      <span
+        slot="footer"
+        class="dialog-footer"
+      >
+        <el-button @click="dialogVisible = false">取 消</el-button>
+        <el-button
+          type="primary"
+          @click="delfreight()"
+        >确 定</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 
@@ -383,6 +384,7 @@ export default {
       await delfreight(this.handleID)
       this.getfreightList()
       this.handleID = null
+      this.$message.success('删除成功！')
     },
     // 处理返回的关联城市的value数组转化为城市名称
     getAssociatedCityList(list) {
