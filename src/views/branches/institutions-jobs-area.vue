@@ -84,14 +84,17 @@
             <div class="keyword">
               <label>地区关键词：</label>
               <el-input
-                v-model="keyword"
+                :id="inputobj.inputId"
+                v-model="inputobj.keyword"
                 placeholder="请输入地区关键词"
                 @input="handleInputfun"
               />
             </div>
+            <el-button @click="send">默认按钮</el-button>
           </div>
           <div style="padding: 22px 0">
-            <!-- <baidu-map
+            <baidu-map
+              v-if="false"
               ref="myMap"
               class="map"
               :center="center"
@@ -164,7 +167,7 @@
                 stroke-style="dashed"
                 @lineupdate="updatePolygonPath"
               />
-            </baidu-map> -->
+            </baidu-map>
             <map-container></map-container>
           </div>
         </el-card>
@@ -173,6 +176,7 @@
   </div>
 </template>
 <script>
+import bus from '@/bus/bus'
 import MapContainer from '@/components/MapContainer/MapContainer'
 import { agencyList } from '@/api/institutions'
 import { courierScopeList, courierAdd, deleteCourierScope } from '@/api/branch'
@@ -182,7 +186,10 @@ export default {
   data() {
     return {
       agencyType: null, // 当前点击所处的机构类型（1,2级机构不展示编辑按钮）
-      keyword: '',
+      inputobj: {
+        keyword: '',
+        inputId: 'gaodeinput'
+      },
       isShowOperation: true, // 是否显示顶部操作栏的编辑按钮
       agencyId: '',
       isFirstEdit: true, // 默认进来是否存在电子围栏
@@ -217,6 +224,9 @@ export default {
   // 创建完毕状态
   created() {
     this.initialDate()
+  },
+  mounted() {
+    this.send()
   },
   // 组件更新
   updated: function () {},
@@ -379,11 +389,11 @@ export default {
       })
       this.listLoading = false
     },
-    // 开启多边形绘制
+    // // 开启多边形绘制
     toggle(name) {
       this[name].editing = !this[name].editing
     },
-    // 删除围栏
+    // // 删除围栏
     async clear() {
       this.isOperation = false
       this.polyline.editing = false
@@ -452,6 +462,9 @@ export default {
     // 在原有多边形的基础上继续绘制触发
     updatePolygonPath(e) {
       this.polygonPath = e.target.getPath()
+    },
+    send() {
+      bus.$emit('shareUserInput', this.inputobj)
     }
   }
 }

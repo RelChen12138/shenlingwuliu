@@ -37,7 +37,7 @@ export function parseTime(time, cFormat) {
   const time_str = format.replace(/{([ymdhisa])+}/g, (result, key) => {
     const value = formatObj[key]
     // Note: getDay() returns 0 on Sunday
-    if (key === 'a') { return ['日', '一', '二', '三', '四', '五', '六'][value ] }
+    if (key === 'a') { return ['日', '一', '二', '三', '四', '五', '六'][value] }
     return value.toString().padStart(2, '0')
   })
   return time_str
@@ -97,12 +97,12 @@ export function param2Obj(url) {
   }
   return JSON.parse(
     '{"' +
-      decodeURIComponent(search)
-        .replace(/"/g, '\\"')
-        .replace(/&/g, '","')
-        .replace(/=/g, '":"')
-        .replace(/\+/g, ' ') +
-      '"}'
+    decodeURIComponent(search)
+      .replace(/"/g, '\\"')
+      .replace(/&/g, '","')
+      .replace(/=/g, '":"')
+      .replace(/\+/g, ' ') +
+    '"}'
   )
 }
 
@@ -113,7 +113,7 @@ export function randomNum(len, radix) {
 
   if (len) {
     // Compact form
-    for (let i = 0; i < len; i++) uuid[i] = chars[0 | Math.random() * radix ]
+    for (let i = 0; i < len; i++) uuid[i] = chars[0 | Math.random() * radix]
   } else {
     // rfc4122, version 4 form
     let r
@@ -135,7 +135,7 @@ export function randomNum(len, radix) {
 }
 
 // 时间戳转时间  年/月/日 时:分:秒
-export function getHMS (timestamp) {
+export function getHMS(timestamp) {
   var date = new Date(timestamp) // 时间戳为10位需*1000，时间戳为13位的话不需乘1000
   var Y = date.getFullYear() + '-'
   var M = (date.getMonth() + 1 < 10 ? '0' + (date.getMonth() + 1) : date.getMonth() + 1) + '-'
@@ -191,10 +191,10 @@ export function handleDate(val) {
   const min = Number(
     (
       ((val / 60).toFixed(2) - parseInt((val / 60).toFixed(2))) *
-        60
+      60
     ).toFixed() === '0' ? '00' : (
         ((val / 60).toFixed(2) - parseInt((val / 60).toFixed(2))) *
-        60
+      60
       ).toFixed()
   )
   return (
@@ -204,19 +204,4 @@ export function handleDate(val) {
       min >= 10 ? min : '0' + min
     )
   )
-}
-
-// 数组转化成树形结构
-export function listToTree(list, rootVal) {
-  const arr = []
-  list.forEach(element => {
-    if (element.parentId === rootVal) {
-      arr.push(element)
-    }
-    const children = listToTree(list, element.id)
-    if (children.length) {
-      element.children = children
-    }
-  })
-  return arr
 }
