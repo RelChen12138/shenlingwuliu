@@ -338,7 +338,7 @@ export default {
     // 重置表单
     reset() {
       this.formInline = {
-        page: 0, // 页码
+        // page: 0, // 页码
         pageSize: 10, // 页面大小
         name: '', // 员工姓名
         employeeNumber: '', // 员工账号
