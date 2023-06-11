@@ -196,5 +196,14 @@ module.exports = {
       })
       config.optimization.runtimeChunk('single')
     })
+  },
+  pluginOptions: {
+    'style-resources-loader': {
+      preProcessor: 'scss',
+      patterns: [
+        // 这里可以添加多个 SCSS 文件，例如：
+        path.resolve(__dirname, 'src/styles/index.scss')
+      ]
+    }
   }
 }
