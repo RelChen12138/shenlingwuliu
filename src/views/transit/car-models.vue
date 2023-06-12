@@ -12,27 +12,27 @@
         >
           <el-form-item
             label="车型编号："
-            prop="number"
+            prop="id"
           >
             <el-input
-              v-model="form.number"
+              v-model="form.id"
               style="width:300px"
               placeholder="请输入车辆编号"
             ></el-input>
           </el-form-item>
           <el-form-item
             label="应载重量:"
-            prop="weight"
+            prop="allowableLoad"
           >
             <el-select
-              v-model="form.weight"
+              v-model="form.allowableLoad"
               style="width:300px"
               placeholder="请选择应载重量"
             >
               <el-option
-                v-for="item in options"
+                v-for="item in allowableLoad"
                 :key="item.value"
-                :label="item.label"
+                :label="item.name"
                 :value="item.value"
               >
               </el-option>
@@ -40,17 +40,17 @@
           </el-form-item>
           <el-form-item
             label="应载体积:"
-            prop="volume"
+            prop="allowableVolume"
           >
             <el-select
-              v-model="form.volume"
+              v-model="form.allowableVolume"
               style="width:300px"
               placeholder="请选择应载体积"
             >
               <el-option
-                v-for="item in optionsTiji"
+                v-for="item in allowableVolume"
                 :key="item.value"
-                :label="item.label"
+                :label="item.name"
                 :value="item.value"
               >
               </el-option>
@@ -58,20 +58,24 @@
           </el-form-item>
           <el-form-item
             label="车型类型："
-            prop="type"
+            prop="name"
           >
             <el-input
-              v-model="form.type"
+              v-model="form.name"
               style="width:300px"
               placeholder="请输入车辆类型"
             ></el-input>
           </el-form-item>
           <el-form-item>
             <el-button
-              type="primary"
-              @click="submitForm('form')"
+              type="warning"
+              @click="submitForm(form)"
             >搜索</el-button>
-            <el-button @click="resetForm">重置</el-button>
+            <el-button
+              type="warning"
+              plain
+              @click="resetForm"
+            >重置</el-button>
           </el-form-item>
         </el-form>
       </div>
@@ -81,7 +85,7 @@
       <!-- 新增车辆按钮 -->
       <div class="add-car">
         <el-button
-          type="primary"
+          type="warning"
           @click="addcar"
         >新增车辆</el-button>
       </div>
@@ -143,16 +147,17 @@
           <el-table-column
             label="操作"
           >
-            <template slot-scope="scope">
+            <template v-slot="{row}">
               <el-button
                 type="text"
                 size="small"
-                @click="caredit(scope.row)"
+                @click="caredit(row)"
               >编辑</el-button>
               <el-button
                 type="text"
                 size="small"
-                @click="cardel"
+                style="color:red"
+                @click="cardel(row.id)"
               >删除</el-button>
             </template>
           </el-table-column>
@@ -175,18 +180,31 @@
         </el-row>
       </div>
     </div>
+    <AddCarVue
+      ref="addcar"
+      :showaddcar="showaddcar"
+      :carid="carid"
+      @refesg="refcreated"
+    ></AddCarVue>
   </div>
 </template>
 <script>
-import { list } from '@/api/transit'
+import { list, del } from '@/api/transit'
+import AddCarVue from '@/views/transit/components/car-models-add.vue'
 export default {
+  components: {
+    AddCarVue
+  },
   data() {
     return {
+      showaddcar: false, // 弹窗
       form: {
-        number: '',
-        weigth: '',
-        type: '',
-        volume: ''
+        page: 1,
+        pageSize: 10,
+        allowableLoad: '',
+        allowableVolume: '',
+        id: '',
+        name: ''
       },
       // 默认页码数据
       pagesize: {
@@ -197,80 +215,82 @@ export default {
       total: null,
       // 表单详情
       tableData: [{
-        allowableLoad: null,
-        allowableVolume: null,
+        allowableLoad: null, // 下拉框承重
+        allowableVolume: null, // 下拉框体积
         id: null,
-        measureHigh: null,
-        measureLong: null,
-        measureWidth: null,
+        measureHigh: null, // 高
+        measureLong: null, // 长
+        measureWidth: null, // 宽
         name: '',
         num: null
       }],
       // 车辆承重下拉框
-      options: [{
+      allowableLoad: [{
         value: 'RANGE_LEVEL_1',
-        label: '<1.8(吨)'
+        name: '<1.8(吨)'
       },
       {
         value: 'RANGE_LEVEL_2',
-        label: '1.8-6(吨)'
+        name: '1.8-6(吨)'
       },
       {
         value: 'RANGE_LEVEL_3',
-        label: '6-14(吨)'
+        name: '6-14(吨)'
       },
       {
         value: 'RANGE_LEVEL_4',
-        label: '14-30(吨)'
+        name: '14-30(吨)'
       },
       {
         value: 'RANGE_LEVEL_5',
-        label: '30-50(吨)'
+        name: '30-50(吨)'
       },
       {
         value: 'RANGE_LEVEL_6',
-        label: '50-100(吨)'
+        name: '50-100(吨)'
       },
       {
         value: 'RANGE_LEVEL_7',
-        label: '100>（吨）'
+        name: '100>（吨）'
       }],
-      optionsTiji: [{
+      allowableVolume: [{
         value: 'RANGE_LEVEL_1',
-        label: '<3(m³)'
+        name: '<3(m³)'
       },
       {
         value: 'RANGE_LEVEL_2',
-        label: '3-5(m³)'
+        name: '3-5(m³)'
       },
       {
         value: 'RANGE_LEVEL_3',
-        label: '5-10(m³)'
+        name: '5-10(m³)'
       },
       {
         value: 'RANGE_LEVEL_4',
-        label: '10-15(m³)'
+        name: '10-15(m³)'
       },
       {
         value: 'RANGE_LEVEL_5',
-        label: '15-30(m³)'
+        name: '15-30(m³)'
       },
       {
         value: 'RANGE_LEVEL_6',
-        label: '30-50(m³)'
+        name: '30-50(m³)'
       },
       {
         value: 'RANGE_LEVEL_7',
-        label: '50-80(m³)'
+        name: '50-80(m³)'
       },
       {
         value: 'RANGE_LEVEL_8',
-        label: '80-150(m³)'
+        name: '80-150(m³)'
       },
       {
         value: 'RANGE_LEVEL_9',
-        label: '150>(m³)'
-      }]
+        name: '150>(m³)'
+      }],
+      // 表单当前点击的id
+      carid: ''
     }
   },
   created() {
@@ -278,10 +298,9 @@ export default {
     this.fetchCar()
   },
   methods: {
-    // 获取数据
+    // 获取表单数据
     async fetchCar() {
       const { data } = await list(this.pagesize)
-      console.log(data)
       // 页码渲染
       this.total = +data.counts
       // 表单页面渲染
@@ -289,21 +308,63 @@ export default {
       // 下拉框渲染
       // this.weigth =
     },
+    // 获取最新表单数据
+    refcreated() {
+      this.fetchCar()
+    },
+    // 搜索
+    async submitForm() {
+      const { data } = await list(this.form)
+      // 页码渲染
+      this.total = +data.counts
+      // 分页器渲染
+      this.pagesize.page = data.page
+      this.pagesize.pageSize = data.page
+      // 表单页面渲染
+      this.tableData = data.items
+    },
     // 重置
     resetForm() {
       this.$refs.form.resetFields()
     },
-    // 新增车辆
+    // 新增车辆按钮
     addcar() {
-      console.log(111)
+      this.$refs.addcar.looksysloading()
     },
     // 车辆编辑
     caredit(row) {
-      console.log(row)
+      this.carid = row.id
+      this.$refs.addcar.looksysloading(true, row.id)
     },
     // 删除车辆
-    cardel() {
-      console.log(222)
+    // async cardel(id) {
+    //   const res = await del(id)
+    //   if (res.code === 1) {
+    //     this.$message.warning('当前车辆在使用中不能删除')
+    //   } else {
+    //     this.$message.success('删除成功')
+    //     this.fetchCar()
+    //   }
+    // },
+    cardel(id) {
+      this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(async() => {
+        const res = await del(id)
+        if (res.code === 1) {
+          this.$message.warning('当前车辆在使用中不能删除')
+        } else {
+          this.$message.success('删除成功')
+          this.fetchCar()
+        }
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消删除'
+        })
+      })
     },
     // 每页多少条数据
     handleSizeChange(val) {
