@@ -404,8 +404,9 @@ export default {
       this.driverTruck = []
     },
     handleQUXIAO() {
-      this.dialogTableVisible = false
       this.driverTruck = []
+      this.value = ''
+      this.dialogTableVisible = false
     }
   }
 }

@@ -172,7 +172,7 @@
                   <el-col :span="8">
                     <el-form-item label="驾驶证类型:">
                       <el-input
-                        v-model="driverCardInfo.age"
+                        v-model="driverCardInfo.licenseType"
                         inline="true"
                         disabled
                         style="width: 203px"
@@ -357,7 +357,7 @@
                       type="date"
                       inline="true"
                       style="width: 203px; height: 40px;"
-                      placeholder="选择日期"
+                      placeholder="请选择日期"
                     >
                     </el-date-picker>
                   </el-form-item>
