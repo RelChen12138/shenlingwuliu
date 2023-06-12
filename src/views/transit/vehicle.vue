@@ -9,18 +9,18 @@
         :model="obj"
         :rules="rules"
         class="demo-form-inline"
-        style="width: 100%;"
+        style="width:100%;"
       >
         <el-form-item
           prop="truckTypeId"
           label="车辆类型"
-          style="width: 35%;"
+          style="width:35%;"
         >
           <el-select
             v-model="obj.truckTypeId"
             clearable
             placeholder="请选择"
-            style="width: 380px;"
+            style="width:380px;"
           >
             <el-option
               v-for="item in carTypeList"
@@ -33,11 +33,11 @@
         <el-form-item
           prop="licensePlate"
           label="车牌号码"
-          style="width: 35%;"
+          style="width:35%;"
         >
           <el-input
             v-model="obj.licensePlate"
-            style="width: 380px;"
+            style="width:380px;"
             placeholder="请输入车牌号码"
           ></el-input>
 

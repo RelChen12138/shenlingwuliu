@@ -23,7 +23,6 @@
                   label="车辆编号："
                   prop="id"
                 >
-                  <!-- <span class="span-title">车辆编号：</span> -->
                   <el-input
                     v-model="vehicles.id"
                     :disabled="true"
@@ -34,6 +33,9 @@
 
               </div>
               <div class="form-item">
+                <!-- 通过一个布尔值 isShow 控制input边框是否存在 disabled属性是否添加 -->
+                <!-- isShow为true时 border:none disabled添加 -->
+                <!-- isShow为false时 border: 1px solid #DCDFE6; disabled不添加 -->
                 <el-form-item
                   label="车牌号码："
                   prop="licensePlate"
@@ -53,7 +55,6 @@
                   label="车型名称："
                   prop="truckTypeName"
                 >
-                  <!-- <span class="span-title">车型名称：</span> -->
                   <el-select
                     v-model="vehicles.truckTypeName"
                     value-key="id"
